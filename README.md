@@ -1,4 +1,4 @@
-# ![MadMilkman.Ini component's icon](../blob/master/MadMilkman.Ini/Properties/MadMilkman.Ini.png) MadMilkman.Ini
+# ![MadMilkman.Ini component's icon](../master/MadMilkman.Ini/Properties/MadMilkman.Ini.png) MadMilkman.Ini
 **MadMilkman.Ini** is a .NET component which simplifies processing of INI files and requires only a minimum **.NET Framework version 2.0**.
 
 ## Advantages:
@@ -10,7 +10,7 @@
 ## Installation
 You can use this component in any way that suits you:
 * As _private assembly_ by adding a DLL inside your project.
-* As _shared assembly_ by downloading and installing [MadMilkman.Ini.Setup.msi](../blob/master/MadMilkman.Ini.Setup.msi).
+* As _shared assembly_ by downloading and installing [MadMilkman.Ini.Setup.msi](../master/MadMilkman.Ini.Setup.msi).
 * As _package_ via NuGet:
 ```powershell
 PM> Install-Package MadMilkman.Ini
