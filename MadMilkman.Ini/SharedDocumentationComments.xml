@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Comments>
+  <Comment name="AddIgnored">
+    <remarks>
+      <para>If item duplicates are <see cref="IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not added</b>.</para>
+    </remarks>
+  </Comment>
+  <Comment name="InsertIgnored">
+    <remarks>
+      <para>If item duplicates are <see cref="IniDuplication.Ignored">ignored</see> and this item is a duplicate, has an existing name in this collection, then it is <b>not inserted</b>.</para>
+    </remarks>
+  </Comment>
+</Comments>

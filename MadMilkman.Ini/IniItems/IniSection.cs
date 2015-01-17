@@ -1,0 +1,96 @@
+﻿using System.Diagnostics;
+using System.Collections.Generic;
+
+namespace MadMilkman.Ini
+{
+    /// <summary>
+    /// Represents a section item of the INI file with name and keys content.
+    /// </summary>
+    public sealed class IniSection : IniItem
+    {
+        /// <summary>
+        /// Represents a section name which is used to define a global section, used for storing first keys series that don't belong to any section.
+        /// </summary>
+        /// <remarks>
+        /// <para>
+        /// If a section with this name is located as a first file's section then its name and comments are ignored.
+        /// If a section with this name isn't located as first file's section then it will be written with <c>MADMILKMAN_INI_FILE_GLOBAL_SECTION</c> name.
+        /// </para>
+        /// </remarks>
+        public const string GlobalSectionName = "MADMILKMAN_INI_FILE_GLOBAL_SECTION";
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly IniKeyCollection keys;
+
+        /// <summary>
+        /// Gets the <see cref="IniSection">section's</see> key collection.
+        /// </summary>
+        public IniKeyCollection Keys { get { return this.keys; } }
+
+        /// <summary>
+        /// Gets the <see cref="IniSectionCollection"/> to which this <see cref="IniSection"/> belongs to.
+        /// </summary>
+        public IniSectionCollection ParentCollection { get { return (IniSectionCollection)this.ParentCollectionCore; } }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IniSection"/> class.
+        /// </summary>
+        /// <param name="parentFile">The owner file.</param>
+        /// <param name="name">The section's name.</param>
+        public IniSection(IniFile parentFile, string name) : this(parentFile, name, (IEnumerable<IniKey>)null) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IniSection"/> class.
+        /// </summary>
+        /// <param name="parentFile">The owner file.</param>
+        /// <param name="name">The section's name.</param>
+        /// <param name="keys">The section's keys.</param>
+        public IniSection(IniFile parentFile, string name, params IniKey[] keys) : this(parentFile, name, (IEnumerable<IniKey>)keys) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IniSection"/> class.
+        /// </summary>
+        /// <param name="parentFile">The owner file.</param>
+        /// <param name="name">The section's name.</param>
+        /// <param name="keys">The section's keys.</param>
+        public IniSection(IniFile parentFile, string name, IEnumerable<IniKey> keys)
+            : base(parentFile, name)
+        {
+            this.keys = new IniKeyCollection(parentFile, parentFile.options.KeyDuplicate, parentFile.options.KeyNameCaseSensitive);
+
+            if (keys != null)
+                foreach (IniKey key in keys)
+                    this.keys.Add(key);
+        }
+
+        // Constructor used by IniReader.
+        internal IniSection(IniFile parentFile, string name, IniComment trailingComment)
+            : base(parentFile, name, trailingComment)
+        {
+            this.keys = new IniKeyCollection(parentFile, parentFile.options.KeyDuplicate, parentFile.options.KeyNameCaseSensitive);
+        }
+
+        // Deep copy constructor.
+        internal IniSection(IniFile destinationFile, IniSection sourceSection)
+            : base(destinationFile, sourceSection)
+        {
+            this.keys = new IniKeyCollection(destinationFile, destinationFile.options.KeyDuplicate, destinationFile.options.KeyNameCaseSensitive);
+
+            foreach (var key in sourceSection.keys)
+                this.keys.Add(key.Copy(destinationFile));
+        }
+
+        /// <summary>
+        /// Copies this <see cref="IniSection"/> instance.
+        /// </summary>
+        /// <returns>Copied <see cref="IniSection"/>.</returns>
+        public IniSection Copy() { return this.Copy(this.ParentFile); }
+
+        /// <summary>
+        /// Copies this <see cref="IniSection"/> instance and sets copied instance's <see cref="IniItem.ParentFile">ParentFile</see>.
+        /// </summary>
+        /// <param name="destinationFile">Copied section's parent file.</param>
+        /// <returns>Copied <see cref="IniSection"/> that belongs to a specified <see cref="IniFile"/>.</returns>
+        public IniSection Copy(IniFile destinationFile) { return new IniSection(destinationFile, this); }
+    }
+}

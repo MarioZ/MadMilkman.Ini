@@ -1,0 +1,235 @@
+﻿using System;
+using System.Diagnostics;
+using System.Collections;
+using System.Collections.Generic;
+
+namespace MadMilkman.Ini
+{
+    /// <summary>
+    /// Represents a base generic class for INI content item collections, <see cref="IniSectionCollection"/> and <see cref="IniKeyCollection"/>.
+    /// </summary>
+    /// <typeparam name="T"><see cref="IniItem"/> derived type.</typeparam>
+    [DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(DebugCollectionViewer<>))]
+    public abstract class IniItemCollection<T> : IItemNameVerifier, IList<T> where T : IniItem
+    {
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly bool caseSensitive;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly IniDuplication duplication;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly IList<T> items;
+
+        /// <exclude/>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        protected readonly IniFile parentFile;
+
+        /// <summary>
+        /// Gets the number of items in this collection.
+        /// </summary>
+        public int Count { get { return this.items.Count; } }
+
+        internal IniItemCollection(IniFile parentFile, IniDuplication duplication, bool caseSensitive)
+        {
+            this.caseSensitive = caseSensitive;
+            this.duplication = duplication;
+            this.parentFile = parentFile;
+            this.items = new List<T>();
+        }
+
+        /// <summary>
+        /// Adds an item to the end of this collection.
+        /// </summary>
+        /// <param name="item">Item to add to this collection.</param>
+        /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="AddIgnored"]/*'/>
+        public void Add(T item)
+        {
+            if (this.VerifyItem(item))
+                this.items.Add(item);
+        }
+
+        /// <summary>
+        /// Removes all items from this collection.
+        /// </summary>
+        public void Clear() { this.items.Clear(); }
+
+        /// <summary>
+        /// Determines whether an item is in this collection.
+        /// </summary>
+        /// <param name="item">Item to locate in this collection.</param>
+        /// <returns><see langword="true"/> if the specified item is in the collection.</returns>
+        public bool Contains(T item) { return this.items.Contains(item); }
+
+        /// <summary>
+        /// Determines whether an item is in this collection.
+        /// </summary>
+        /// <param name="name">Name of the item to locate in this collection.</param>
+        /// <returns><see langword="true"/> if the item with specified name is in the collection.</returns>
+        public bool Contains(string name) { return this.GetItemIndexByName(name) != -1; }
+        
+        /// <summary>
+        /// Shallow copies the items of this collection to an array.
+        /// </summary>
+        /// <param name="array">One-dimensional array that is the destination of the items copied from this collection.</param>
+        /// <param name="arrayIndex">Zero-based index in array at which copying begins.</param>
+        public void CopyTo(T[] array, int arrayIndex) { this.items.CopyTo(array, arrayIndex); }
+
+        /// <summary>
+        /// Searches for the specified item and returns the zero-based index of the first occurrence within this collection.
+        /// </summary>
+        /// <param name="item">Item to locate in this collection.</param>
+        /// <returns>Index of the first occurrence of specified item in the collection.</returns>
+        public int IndexOf(T item) { return this.items.IndexOf(item); }
+
+        /// <summary>
+        /// Searches for the specified item and returns the zero-based index of the first occurrence within this collection.
+        /// </summary>
+        /// <param name="name">Name of the item to locate in this collection.</param>
+        /// <returns>Index of the first occurrence of the item with specified name in the collection.</returns>
+        public int IndexOf(string name) { return this.GetItemIndexByName(name); }
+
+        /// <summary>
+        /// Inserts an item to this collection at the specified index.
+        /// </summary>
+        /// <param name="index">Zero-based index at which item should be inserted.</param>
+        /// <param name="item">Item to insert to this collection.</param>
+        /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="InsertIgnored"]/*'/>
+        public void Insert(int index, T item)
+        {
+            if (this.VerifyItem(item))
+                this.items.Insert(index, item);
+        }
+
+        /// <summary>
+        /// Removes the first occurrence of specific item from this collection.
+        /// </summary>
+        /// <param name="item">Item to remove from this collection.</param>
+        /// <returns><see langword="true"/> if the specified item is removed from the collection.</returns>
+        public bool Remove(T item)
+        {
+            if (!this.items.Remove(item))
+                return false;
+
+            item.ParentCollectionCore = null;
+            return true;
+        }
+
+        /// <summary>
+        /// Removes the first occurrence of specific item from this collection.
+        /// </summary>
+        /// <param name="name">Name of the item to remove from this collection.</param>
+        /// <returns><see langword="true"/> if the item with specified name is removed from the collection.</returns>
+        public bool Remove(string name)
+        {
+            int index = this.GetItemIndexByName(name);
+
+            if (index == -1)
+                return false;
+
+            this.items.RemoveAt(index);
+            return true;
+        }
+
+        /// <summary>
+        /// Removes an item at the specified index from this collection.
+        /// </summary>
+        /// <param name="index">Zero-based index at which item should be inserted.</param>
+        public void RemoveAt(int index)
+        {
+            this.items[index].ParentCollectionCore = null;
+            this.items.RemoveAt(index);
+        }
+
+        /// <summary>
+        /// Gets or sets the item at the specified index.
+        /// </summary>
+        /// <param name="index">Zero-based index of the item to get or set.</param>
+        /// <remarks>
+        /// If item duplicates are <see cref="IniDuplication.Ignored">ignored</see> and value is a duplicate item, has an existing name in this collection, then this value <b>is ignored</b>.
+        /// </remarks>
+        public T this[int index]
+        {
+            get { return this.items[index]; }
+            set
+            {
+                if (this.VerifyItem(value))
+                {
+                    this.items[index].ParentCollectionCore = null;
+                    this.items[index] = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the first item of the specified name.
+        /// </summary>
+        /// <param name="name">Name of the item to get.</param>
+        /// <remarks>If item with the specified name doesn't exist a <see langword="null"/> value is returned.</remarks>
+        public T this[string name]
+        {
+            get
+            {
+                int index = this.GetItemIndexByName(name);
+                return (index != -1) ? this.items[index] : null;
+            }
+        }
+
+        /// <summary>
+        /// Returns an enumerator that iterates through the collection.
+        /// </summary>
+        public IEnumerator<T> GetEnumerator() { return this.items.GetEnumerator(); }
+
+        private int GetItemIndexByName(string name)
+        {
+            var iniItems = (IEnumerable<IniItem>)this.items;
+            int index = 0;
+
+            foreach (var item in iniItems)
+            {
+                if (item.Name.Equals(name, (this.caseSensitive) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
+                    return index;
+                else
+                    index++;
+            }
+
+            return -1;
+        }
+
+        private bool VerifyItem(IniItem item)
+        {
+            if (item == null)
+                throw new ArgumentNullException("item");
+
+            if (item.ParentFile != this.parentFile)
+                throw new InvalidOperationException();
+
+            if (item.ParentCollectionCore != null)
+                throw new InvalidOperationException();
+
+            if (!this.VerifyItemName(item.Name))
+                return false;
+
+            item.ParentCollectionCore = this;
+            return true;
+        }
+
+        private bool VerifyItemName(string name) { return ((IItemNameVerifier)this).VerifyItemName(name); }
+
+        bool IItemNameVerifier.VerifyItemName(string name)
+        {
+            if (this.duplication != IniDuplication.Allowed && this.Contains(name))
+            {
+                if (this.duplication == IniDuplication.Disallowed)
+                    throw new InvalidOperationException();
+
+                return false;
+            }
+
+            return true;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() { return this.GetEnumerator(); }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        bool ICollection<T>.IsReadOnly { get { return false; } }
+    }
+}

@@ -1,0 +1,83 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{BEF9735D-C3CC-41E6-AAC6-18C5985D3107}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MadMilkman.Ini</RootNamespace>
+    <AssemblyName>MadMilkman.Ini</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>bin\Debug\MadMilkman.Ini.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\MadMilkman.Ini.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Properties\MadMilkman.Ini.StrongNameKey.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DebugCollectionViewer.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IniEnums\IniCommentStarter.cs" />
+    <Compile Include="IniEnums\IniCommentType.cs" />
+    <Compile Include="IniEnums\IniDuplication.cs" />
+    <Compile Include="IniEnums\IniKeyDelimiter.cs" />
+    <Compile Include="IniEnums\IniSectionWrapper.cs" />
+    <Compile Include="IniEnums\IniSectionWrapperUtility.cs" />
+    <Compile Include="IniFile.cs" />
+    <Compile Include="IniItemsCollection\IniItemCollection.cs" />
+    <Compile Include="IniItemsCollection\IniKeyCollection.cs" />
+    <Compile Include="IniComment.cs" />
+    <Compile Include="IItemNameVerifier.cs" />
+    <Compile Include="IniItems\IniItem.cs" />
+    <Compile Include="IniItems\IniKey.cs" />
+    <Compile Include="IniItems\IniSection.cs" />
+    <Compile Include="IniOptions.cs" />
+    <Compile Include="IniItemsCollection\IniSectionCollection.cs" />
+    <Compile Include="IniReaderWriter\IniReader.cs" />
+    <Compile Include="IniReaderWriter\IniWriter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\MadMilkman.Ini.StrongNameKey.snk" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\MadMilkman.Ini.png" />
+    <Content Include="SharedDocumentationComments.xml" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
