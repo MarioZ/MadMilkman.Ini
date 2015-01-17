@@ -10,7 +10,7 @@
 ## Installation
 You can use this component in any way that suits you:
 * As _private assembly_ by adding a DLL inside your project.
-* As _shared assembly_ by downloading and installing [MadMilkman.Ini.Setup.msi](../master/MadMilkman.Ini.Setup.msi).
+* As _shared assembly_ by installing MadMilkman.Ini.Setup.msi.
 * As _package_ via NuGet:
 ```powershell
 PM> Install-Package MadMilkman.Ini
