@@ -64,7 +64,22 @@ namespace MadMilkman.Ini
             if (fileStream == null)
                 throw new ArgumentNullException("fileStream");
 
-            new IniReader(this.options).Read(this, new StreamReader(fileStream, this.options.Encoding));
+            this.Load(new StreamReader(fileStream, this.options.Encoding));
+
+            if (fileStream.CanSeek)
+                fileStream.Seek(0, SeekOrigin.Begin);
+        }
+
+        /// <summary>
+        /// Loads a file from a reader.
+        /// </summary>
+        /// <param name="reader">Reader from which to load a file.</param>
+        public void Load(TextReader fileReader)
+        {
+            if (fileReader == null)
+                throw new ArgumentNullException("fileReader");
+
+            new IniReader(this.options).Read(this, fileReader);
         }
 
         /// <summary>
@@ -89,7 +104,22 @@ namespace MadMilkman.Ini
             if (fileStream == null)
                 throw new ArgumentNullException("fileStream");
 
-            new IniWriter(this.options).Write(this, new StreamWriter(fileStream, this.options.Encoding));
+            this.Save(new StreamWriter(fileStream, this.options.Encoding));
+
+            if (fileStream.CanSeek)
+                fileStream.Seek(0, SeekOrigin.Begin);
+        }
+
+        /// <summary>
+        /// Saves a file to a writer.
+        /// </summary>
+        /// <param name="fileWriter">Writer to which to save a file.</param>
+        public void Save(TextWriter fileWriter)
+        {
+            if (fileWriter == null)
+                throw new ArgumentNullException("fileWriter");
+
+            new IniWriter(this.options).Write(this, fileWriter);
         }
     }
 }

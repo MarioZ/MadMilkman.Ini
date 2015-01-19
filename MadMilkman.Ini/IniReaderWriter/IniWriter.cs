@@ -7,19 +7,15 @@ namespace MadMilkman.Ini
     {
         private static readonly string[] NewLines = { "\r\n", "\n", "\r" };
         private readonly IniOptions options;
-        private StreamWriter writer;
+        private TextWriter writer;
 
         public IniWriter(IniOptions options) { this.options = options; }
 
-        public void Write(IniFile iniFile, StreamWriter writer)
+        public void Write(IniFile iniFile, TextWriter writer)
         {
             this.writer = writer;
             this.WriteSections(iniFile.Sections);
-
             this.writer.Flush();
-
-            if (this.writer.BaseStream.CanSeek)
-                this.writer.BaseStream.Seek(0, SeekOrigin.Begin);
         }
 
         private void WriteSections(IniSectionCollection sections)

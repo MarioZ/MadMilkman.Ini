@@ -1,14 +1,12 @@
 ﻿using System;
 using System.IO;
-using System.Diagnostics;
-using System.Globalization;
 
 namespace MadMilkman.Ini
 {
     internal sealed class IniReader
     {
         private readonly IniOptions options;
-        private StreamReader reader;
+        private TextReader reader;
 
         private int currentEmptyLinesBefore;
         private IniComment currentTrailingComment;
@@ -22,15 +20,14 @@ namespace MadMilkman.Ini
             this.currentSection = null;
         }
 
-        public void Read(IniFile iniFile, StreamReader reader)
+        public void Read(IniFile iniFile, TextReader reader)
         {
             this.reader = reader;
 
-            while (!this.reader.EndOfStream)
+            string line;
+            while ((line = this.reader.ReadLine()) != null)
             {
-                string line = this.reader.ReadLine();
-
-                if (string.IsNullOrEmpty(line) || line.Trim().Length == 0)
+                if (line.Trim().Length == 0)
                     this.currentEmptyLinesBefore++;
                 else
                     this.ReadLine(line, iniFile);
@@ -83,8 +80,6 @@ namespace MadMilkman.Ini
              * CONSIDER: Implement a support for section's name which contains end wrapper characters. */
 
             int sectionEndIndex = line.IndexOf(IniSectionWrapperUtility.SectionWrapperToChar(this.options.SectionWrapper, false), leftIndention);
-
-            Debug.Assert(sectionEndIndex != -1, "Section parsing issue!", string.Format(CultureInfo.CurrentCulture, "LINE:{0}{1}{0}LEFT INDENTION:{0}{2}{0}MISSING:{0}{3}", Environment.NewLine, line, leftIndention, IniSectionWrapperUtility.SectionWrapperToChar(this.options.SectionWrapper, false)));
             if (sectionEndIndex != -1)
             {
                 this.currentSection = new IniSection(file,
@@ -107,8 +102,6 @@ namespace MadMilkman.Ini
         {
             // Index of first non 'whitespace' character.
             int leftIndention = Array.FindIndex(lineLeftover.ToCharArray(), c => !(char.IsWhiteSpace(c) || c == '\t'));
-
-            Debug.Assert(leftIndention != -1 && lineLeftover[leftIndention] == (char)this.options.CommentStarter, "Section LeadingComment parsing issue!", string.Format(CultureInfo.CurrentCulture, "LINE LEFTOVER:{0}{1}{0}LEFT INDENTION:{0}{2}{0}MISSING:{0}{3}", Environment.NewLine, lineLeftover, leftIndention, (char)this.options.CommentStarter));
             if (leftIndention != -1 && lineLeftover[leftIndention] == (char)this.options.CommentStarter)
             {
                 var leadingComment = this.currentSection.LeadingComment;
@@ -120,8 +113,6 @@ namespace MadMilkman.Ini
         private void ReadKey(int leftIndention, string line, IniFile file)
         {
             int keyDelimiterIndex = line.IndexOf((char)this.options.KeyDelimiter, leftIndention);
-
-            Debug.Assert(keyDelimiterIndex != -1, "Key parsing issue!", string.Format(CultureInfo.CurrentCulture, "LINE:{0}{1}{0}LEFT INDENTION:{0}{2}{0}MISSING:{0}{3}", Environment.NewLine, line, leftIndention, (char)this.options.KeyDelimiter));
             if (keyDelimiterIndex != -1)
             {
                 if (this.currentSection == null)
