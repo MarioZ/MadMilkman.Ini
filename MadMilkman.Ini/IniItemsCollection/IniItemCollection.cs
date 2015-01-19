@@ -18,11 +18,14 @@ namespace MadMilkman.Ini
         private readonly IniDuplication duplication;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IList<T> items;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly IniFile parentFile;
 
         /// <exclude/>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        protected readonly IniFile parentFile;
+        protected IniFile ParentFile { get { return parentFile; } }
 
+        /// 
         /// <summary>
         /// Gets the number of items in this collection.
         /// </summary>

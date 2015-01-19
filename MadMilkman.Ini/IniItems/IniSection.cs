@@ -52,6 +52,17 @@ namespace MadMilkman.Ini
         /// </summary>
         /// <param name="parentFile">The owner file.</param>
         /// <param name="name">The section's name.</param>
+        /// <param name="nameValuePairs">The section's keys data, pairs of key's name and key's value.</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
+         Justification = "I don't want to use IDictionary<string, string>, there is no need for such a contract because IEnumerable<KeyValuePair<string, string>> is enough.")]
+        public IniSection(IniFile parentFile, string name, IEnumerable<KeyValuePair<string, string>> nameValuePairs)
+            : this(parentFile, name, GetIniKeysFromKeyValuePairs(parentFile, nameValuePairs)) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IniSection"/> class.
+        /// </summary>
+        /// <param name="parentFile">The owner file.</param>
+        /// <param name="name">The section's name.</param>
         /// <param name="keys">The section's keys.</param>
         public IniSection(IniFile parentFile, string name, IEnumerable<IniKey> keys)
             : base(parentFile, name)
@@ -92,5 +103,12 @@ namespace MadMilkman.Ini
         /// <param name="destinationFile">Copied section's parent file.</param>
         /// <returns>Copied <see cref="IniSection"/> that belongs to a specified <see cref="IniFile"/>.</returns>
         public IniSection Copy(IniFile destinationFile) { return new IniSection(destinationFile, this); }
+
+        private static IEnumerable<IniKey> GetIniKeysFromKeyValuePairs(IniFile parentFile, IEnumerable<KeyValuePair<string, string>> nameValuePairs)
+        {
+            if (nameValuePairs != null)
+                foreach (var pair in nameValuePairs)
+                    yield return new IniKey(parentFile, pair);
+        }
     }
 }

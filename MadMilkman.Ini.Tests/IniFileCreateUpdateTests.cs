@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace MadMilkman.Ini.Tests
@@ -78,6 +79,41 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Value 3.1.", file.Sections[2].Keys[0].Value);
             Assert.AreEqual("Key 3.2.", file.Sections[2].Keys[1].Name);
             Assert.AreEqual("Value 3.2.", file.Sections[2].Keys[1].Value);
+        }
+
+        [TestMethod]
+        public void CreateIniFileExpertTest()
+        {
+            var dictionary = new Dictionary<string, string>()
+            {
+                { "Key 2.1.", "Value 2.1." },
+                { "Key 2.2.", "Value 2.2." },
+                { "Key 2.3.", "Value 2.3." },
+                { "Key 2.4.", "Value 2.4." }
+            };
+
+            var file = new IniFile(new IniOptions());
+            file.Sections.Add("Section 1.").Keys.Add(new KeyValuePair<string, string>("Key 1.1.", "Value 1.1."));
+            file.Sections.Add("Section 2.", dictionary);
+
+            Assert.AreEqual(2, file.Sections.Count);
+
+            Assert.AreEqual("Section 1.", file.Sections[0].Name);
+            Assert.AreEqual("Section 2.", file.Sections[1].Name);
+
+            Assert.AreEqual(1, file.Sections[0].Keys.Count);
+            Assert.AreEqual(4, file.Sections[1].Keys.Count);
+
+            Assert.AreEqual("Key 1.1.", file.Sections[0].Keys[0].Name);
+            Assert.AreEqual("Value 1.1.", file.Sections[0].Keys[0].Value);
+            Assert.AreEqual("Key 2.1.", file.Sections[1].Keys[0].Name);
+            Assert.AreEqual("Value 2.1.", file.Sections[1].Keys[0].Value);
+            Assert.AreEqual("Key 2.2.", file.Sections[1].Keys[1].Name);
+            Assert.AreEqual("Value 2.2.", file.Sections[1].Keys[1].Value);
+            Assert.AreEqual("Key 2.3.", file.Sections[1].Keys[2].Name);
+            Assert.AreEqual("Value 2.3.", file.Sections[1].Keys[2].Value);
+            Assert.AreEqual("Key 2.4.", file.Sections[1].Keys[3].Name);
+            Assert.AreEqual("Value 2.4.", file.Sections[1].Keys[3].Value);
         }
 
         [TestMethod]

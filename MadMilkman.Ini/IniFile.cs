@@ -73,7 +73,7 @@ namespace MadMilkman.Ini
         /// <summary>
         /// Loads a file from a reader.
         /// </summary>
-        /// <param name="reader">Reader from which to load a file.</param>
+        /// <param name="fileReader">Reader from which to load a file.</param>
         public void Load(TextReader fileReader)
         {
             if (fileReader == null)

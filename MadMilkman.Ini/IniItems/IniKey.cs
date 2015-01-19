@@ -1,4 +1,6 @@
-﻿namespace MadMilkman.Ini
+﻿using System.Collections.Generic;
+
+namespace MadMilkman.Ini
 {
     /// <summary>
     /// Represents a key item of the INI file with name and value content.
@@ -35,6 +37,13 @@
         /// <param name="name">The key's name.</param>
         /// <param name="value">The key's value.</param>
         public IniKey(IniFile parentFile, string name, string value) : base(parentFile, name) { this.Value = value; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IniKey"/> class.
+        /// </summary>
+        /// <param name="parentFile">The owner file.</param>
+        /// <param name="nameValuePair">The key's data, pair of key's name and key's value.</param>
+        public IniKey(IniFile parentFile, KeyValuePair<string, string> nameValuePair) : base(parentFile, nameValuePair.Key) { this.Value = nameValuePair.Value; }
 
         // Constructor used by IniReader.
         internal IniKey(IniFile parentFile, string name, IniComment trailingComment)
