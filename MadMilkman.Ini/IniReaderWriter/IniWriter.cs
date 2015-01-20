@@ -44,9 +44,9 @@ namespace MadMilkman.Ini
             this.writer.Write(
                 // E.g. "   [SectionName]"
                 new String(' ', section.LeftIndentation) +
-                IniSectionWrapperUtility.SectionWrapperToChar(this.options.SectionWrapper, true) +
+                this.options.sectionWrapperStart +
                 section.Name +
-                IniSectionWrapperUtility.SectionWrapperToChar(this.options.SectionWrapper, false));
+                this.options.sectionWrapperEnd);
 
             this.WriteLeadingComment(section.LeadingComment);
 

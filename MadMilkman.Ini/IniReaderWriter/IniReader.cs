@@ -50,7 +50,7 @@ namespace MadMilkman.Ini
             if (startCharacter == (char)this.options.CommentStarter)
                 this.ReadTrailingComment(startIndex, line.Substring(++startIndex));
 
-            else if (startCharacter == IniSectionWrapperUtility.SectionWrapperToChar(this.options.SectionWrapper, true))
+            else if (startCharacter == this.options.sectionWrapperStart)
                 this.ReadSection(startIndex, line, file);
 
             else
@@ -79,7 +79,7 @@ namespace MadMilkman.Ini
              *          
              * CONSIDER: Implement a support for section's name which contains end wrapper characters. */
 
-            int sectionEndIndex = line.IndexOf(IniSectionWrapperUtility.SectionWrapperToChar(this.options.SectionWrapper, false), leftIndention);
+            int sectionEndIndex = line.IndexOf(this.options.sectionWrapperEnd, leftIndention);
             if (sectionEndIndex != -1)
             {
                 this.currentSection = new IniSection(file,

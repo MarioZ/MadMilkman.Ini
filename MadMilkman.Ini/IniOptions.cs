@@ -55,6 +55,12 @@ namespace MadMilkman.Ini
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private Encoding encoding;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private IniSectionWrapper sectionWrapper;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal char sectionWrapperStart;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal char sectionWrapperEnd;
 
         /// <summary>
         /// Gets or sets encoding for reading and writing an INI file.
@@ -111,14 +117,22 @@ namespace MadMilkman.Ini
         /// <summary>
         /// Gets or sets wrapper characters of sections name.
         /// </summary>
-        public IniSectionWrapper SectionWrapper { get; set; }
+        public IniSectionWrapper SectionWrapper
+        {
+            get { return this.sectionWrapper; }
+            set
+            {
+                this.sectionWrapper = value;
+                this.SectionWrapperToCharacters(out this.sectionWrapperStart, out this.sectionWrapperEnd);
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IniOptions"/> class.
         /// </summary>
         public IniOptions()
         {
-            this.Encoding = Encoding.ASCII;
+            this.encoding = Encoding.ASCII;
             this.CommentStarter = IniCommentStarter.Semicolon;
             this.KeyDelimiter = IniKeyDelimiter.Equal;
             this.KeyDuplicate = IniDuplication.Allowed;
@@ -132,7 +146,7 @@ namespace MadMilkman.Ini
         // Deep copy constructor.
         internal IniOptions(IniOptions options)
         {
-            this.Encoding = options.Encoding;
+            this.encoding = options.encoding;
             this.CommentStarter = options.CommentStarter;
             this.KeyDelimiter = options.KeyDelimiter;
             this.KeyDuplicate = options.KeyDuplicate;
@@ -141,6 +155,35 @@ namespace MadMilkman.Ini
             this.SectionDuplicate = options.SectionDuplicate;
             this.SectionNameCaseSensitive = options.SectionNameCaseSensitive;
             this.SectionWrapper = options.SectionWrapper;
+        }
+
+        /* REMARKS: ToChar(bool) extension method on IniSectionWrapper would be nice, but in order to define
+         *          an extension method in .NET 2.0 we need to declare ExtensionAttribute our self.
+         *          
+         *          Changing SectionWrapperToCharacters method's return type to Tuple<char, char> would be nice,
+         *          but writing our own Tuple implementation for .NET 2.0 is an unnecessary overhead. */
+
+        private void SectionWrapperToCharacters(out char startCharacter, out char endCharacte)
+        {
+            switch (this.sectionWrapper)
+            {
+                case IniSectionWrapper.AngleBrackets:
+                    startCharacter = '<';
+                    endCharacte = '>';
+                    break;
+                case IniSectionWrapper.CurlyBrackets:
+                    startCharacter = '{';
+                    endCharacte = '}';
+                    break;
+                case IniSectionWrapper.Parentheses:
+                    startCharacter = '(';
+                    endCharacte = ')';
+                    break;
+                default:
+                    startCharacter = '[';
+                    endCharacte = ']';
+                    break;
+            }
         }
     }
 }

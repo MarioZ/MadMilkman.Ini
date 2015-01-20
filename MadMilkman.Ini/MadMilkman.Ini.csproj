@@ -51,7 +51,6 @@
     <Compile Include="IniEnums\IniDuplication.cs" />
     <Compile Include="IniEnums\IniKeyDelimiter.cs" />
     <Compile Include="IniEnums\IniSectionWrapper.cs" />
-    <Compile Include="IniEnums\IniSectionWrapperUtility.cs" />
     <Compile Include="IniFile.cs" />
     <Compile Include="IniItemsCollection\IniItemCollection.cs" />
     <Compile Include="IniItemsCollection\IniKeyCollection.cs" />
