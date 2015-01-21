@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 using MadMilkman.Ini;
 
 namespace MadMilkman.Ini.Samples.CS
@@ -39,7 +40,17 @@ namespace MadMilkman.Ini.Samples.CS
             // Add new content.
             file.Sections.Add(
                 new IniSection(file, "Section 3",
-                    new IniKey(file, "Key 3", "Value 3")));
+                    new IniKey(file, "Key 3.1", "Value 3.1"),
+                    new IniKey(file, "Key 3.2", "Value 3.2")));
+
+            // Add new content.
+            file.Sections.Add(
+                new IniSection(file, "Section 4",
+                    new Dictionary<string, string>()
+                    {
+                        {"Key 4.1", "Value 4.1"},
+                        {"Key 4.2", "Value 4.2"}
+                    }));
         }
 
         private static void Load()
@@ -171,6 +182,34 @@ namespace MadMilkman.Ini.Samples.CS
             newFile.Sections.Add(section.Copy(newFile));
         }
 
+        private static void Parse()
+        {
+            IniFile file = new IniFile();
+            string content = "[Highest Score]" + Environment.NewLine +
+                              "Name = John Doe" + Environment.NewLine +
+                              "Score = 3200000" + Environment.NewLine +
+                              "Date = 12/31/2010" + Environment.NewLine +
+                              "Time = 11:59:59";
+            using (Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(content)))
+                file.Load(stream);
+
+            IniSection scoreSection = file.Sections["Highest Score"];
+
+            string playerName = scoreSection.Keys["Name"].Value;
+
+            // Retrieve key's value as long.
+            long playerScore;
+            scoreSection.Keys["Score"].TryParseValue(out playerScore);
+
+            // Retrieve key's value as DateTime.
+            DateTime scoreDate;
+            scoreSection.Keys["Date"].TryParseValue(out scoreDate);
+
+            // Retrieve key's value as TimeSpan.
+            TimeSpan gameTime;
+            scoreSection.Keys["Time"].TryParseValue(out gameTime);
+        }
+
         static void Main()
         {
             HelloWorld();
@@ -186,6 +225,8 @@ namespace MadMilkman.Ini.Samples.CS
             Custom();
 
             Copy();
+
+            Parse();
         }
     }
 }

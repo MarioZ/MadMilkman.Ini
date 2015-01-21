@@ -180,6 +180,7 @@ namespace MadMilkman.Ini
         /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
+        /// <returns><see cref="IEnumerator{T}"/> object that can be used to iterate through the collection.</returns>
         public IEnumerator<T> GetEnumerator() { return this.items.GetEnumerator(); }
 
         private int GetItemIndexByName(string name)
@@ -231,8 +232,10 @@ namespace MadMilkman.Ini
             return true;
         }
 
+        /// <exclude/>
         IEnumerator IEnumerable.GetEnumerator() { return this.GetEnumerator(); }
 
+        /// <exclude/>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         bool ICollection<T>.IsReadOnly { get { return false; } }
     }

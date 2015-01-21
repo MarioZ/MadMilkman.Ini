@@ -97,6 +97,7 @@ namespace MadMilkman.Ini
         /// Converts the <see cref="IniKey.Value"/> to an instance of the specified type.
         /// </summary>
         /// <param name="result">Uninitialized instance of a specific type which will hold the converted value if the conversion succeeds.</param>
+        /// <typeparam name="T">Type of the object to convert the <see cref="IniKey.Value"/> to.</typeparam>
         /// <returns>Value that indicates whether the conversion succeeded.</returns>
         /// <remarks>For supported types see the remarks of <see cref="IsSupportedValueType(Type)"/> method.</remarks>
         public bool TryParseValue<T>(out T result)

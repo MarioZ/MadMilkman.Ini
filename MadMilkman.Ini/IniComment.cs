@@ -27,7 +27,7 @@ namespace MadMilkman.Ini
         /// Gets or sets a text of this <see cref="IniComment"/> instance.
         /// </summary>
         /// <remarks>
-        /// <para>For <see cref="IniCommentType.Leading">LeadingComment</see> text should not contain new line characters.
+        /// <para>For <see cref="IniItem.LeadingComment">LeadingComment</see> text should not contain new line characters.
         /// If it does, they will be replaced with a space characters.</para>
         /// </remarks>
         public string Text

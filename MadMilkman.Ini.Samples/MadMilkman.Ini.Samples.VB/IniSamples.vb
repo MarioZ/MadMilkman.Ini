@@ -1,6 +1,7 @@
 ﻿Imports System
 Imports System.IO
 Imports System.Text
+Imports System.Collections.Generic
 Imports MadMilkman.Ini
 
 Module IniSamples
@@ -33,9 +34,18 @@ Module IniSamples
         file.Sections.Add("Section 2").Keys.Add("Key 2", "Value 2")
 
         ' Add new content.
-        file.Sections.Add( _
-            New IniSection(file, "Section 3", _
-                New IniKey(file, "Key 3", "Value 3")))
+        file.Sections.Add(
+            New IniSection(file, "Section 3",
+                New IniKey(file, "Key 3.1", "Value 3.1"),
+                New IniKey(file, "Key 3.2", "Value 3.2")))
+
+        ' Add new content.
+        file.Sections.Add(
+            New IniSection(file, "Section 4",
+                New Dictionary(Of String, String)() From {
+                    {"Key 4.1", "Value 4.1"},
+                    {"Key 4.2", "Value 4.2"}
+                }))
     End Sub
 
     Private Sub Load()
@@ -51,10 +61,10 @@ Module IniSamples
         End Using
 
         ' Load file's content from string.
-        Dim iniContent As String = "[Section 1]" + Environment.NewLine + _
-                                   "Key 1.1 = Value 1.1" + Environment.NewLine + _
-                                   "Key 1.2 = Value 1.2" + Environment.NewLine + _
-                                   "Key 1.3 = Value 1.3" + Environment.NewLine + _
+        Dim iniContent As String = "[Section 1]" + Environment.NewLine +
+                                   "Key 1.1 = Value 1.1" + Environment.NewLine +
+                                   "Key 1.2 = Value 1.2" + Environment.NewLine +
+                                   "Key 1.3 = Value 1.3" + Environment.NewLine +
                                    "Key 1.4 = Value 1.4"
         Using stream As Stream = New MemoryStream(options.Encoding.GetBytes(iniContent))
             iniFile.Load(stream)
@@ -97,10 +107,10 @@ Module IniSamples
         Dim options As New IniOptions()
         Dim iniFile As New IniFile(options)
         iniFile.Sections.Add(
-            New IniSection(iniFile, "Section 1", _
-                New IniKey(iniFile, "Key 1.1", "Value 1.1"), _
-                New IniKey(iniFile, "Key 1.2", "Value 1.2"), _
-                New IniKey(iniFile, "Key 1.3", "Value 1.3"), _
+            New IniSection(iniFile, "Section 1",
+                New IniKey(iniFile, "Key 1.1", "Value 1.1"),
+                New IniKey(iniFile, "Key 1.2", "Value 1.2"),
+                New IniKey(iniFile, "Key 1.3", "Value 1.3"),
                 New IniKey(iniFile, "Key 1.4", "Value 1.4")))
 
         ' Save file to path.
@@ -123,13 +133,13 @@ Module IniSamples
 
     Private Sub Custom()
         ' Create new file with custom formatting.
-        Dim file As New IniFile( _
-                        New IniOptions() With { _
-                            .CommentStarter = IniCommentStarter.Hash, _
-                            .KeyDelimiter = IniKeyDelimiter.Colon, _
-                            .KeySpaceAroundDelimiter = True, _
-                            .SectionWrapper = IniSectionWrapper.CurlyBrackets, _
-                            .Encoding = Encoding.UTF8 _
+        Dim file As New IniFile(
+                        New IniOptions() With {
+                            .CommentStarter = IniCommentStarter.Hash,
+                            .KeyDelimiter = IniKeyDelimiter.Colon,
+                            .KeySpaceAroundDelimiter = True,
+                            .SectionWrapper = IniSectionWrapper.CurlyBrackets,
+                            .Encoding = Encoding.UTF8
                         })
 
         ' Load file.
@@ -163,6 +173,34 @@ Module IniSamples
         newFile.Sections.Add(section.Copy(newFile))
     End Sub
 
+    Private Sub Parse()
+        Dim file As New IniFile()
+        Dim content As String = "[Highest Score]" + Environment.NewLine +
+                                "Name = John Doe" + Environment.NewLine +
+                                "Score = 3200000" + Environment.NewLine +
+                                "Date = 12/31/2010" + Environment.NewLine +
+                                "Time = 11:59:59"
+        Using stream As Stream = New MemoryStream(Encoding.ASCII.GetBytes(content))
+            file.Load(stream)
+        End Using
+
+        Dim scoreSection As IniSection = file.Sections("Highest Score")
+
+        Dim playerName As String = scoreSection.Keys("Name").Value
+
+        ' Retrieve key's value as long.
+        Dim playerScore As Long
+        scoreSection.Keys("Score").TryParseValue(playerScore)
+
+        ' Retrieve key's value as DateTime.
+        Dim scoreDate As DateTime
+        scoreSection.Keys("Date").TryParseValue(scoreDate)
+
+        ' Retrieve key's value as TimeSpan.
+        Dim gameTime As TimeSpan
+        scoreSection.Keys("Time").TryParseValue(gameTime)
+    End Sub
+
     Sub Main()
         HelloWorld()
 
@@ -177,6 +215,8 @@ Module IniSamples
         Custom()
 
         Copy()
+
+        Parse()
     End Sub
 
 End Module

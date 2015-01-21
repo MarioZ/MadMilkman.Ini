@@ -2,6 +2,7 @@
 using namespace System;
 using namespace System::IO;
 using namespace System::Text;
+using namespace System::Collections::Generic;
 using namespace MadMilkman::Ini;
 
 
@@ -37,7 +38,15 @@ void Create()
 	// Add new content.
 	file->Sections->Add(
 		gcnew IniSection(file, "Section 3",
-			gcnew IniKey(file, "Key 3", "Value 3")));
+			gcnew IniKey(file, "Key 3.1", "Value 3.1"),
+			gcnew IniKey(file, "Key 3.2", "Value 3.2")));
+
+	// Add new content.
+	Dictionary<String^, String^> ^collection = gcnew Dictionary<String^, String^>();
+	collection->Add("Key 4.1", "Value 4.1");
+	collection->Add("Key 4.2", "Value 4.2");
+	file->Sections->Add(
+		gcnew IniSection(file, "Section 4", collection));
 }
 
 void Load()
@@ -173,6 +182,35 @@ void Copy()
 	newFile->Sections->Add(section->Copy(newFile));
 }
 
+void Parse()
+{
+	IniFile ^file = gcnew IniFile();
+	String ^content = "[Highest Score]" + Environment::NewLine + 
+					  "Name = John Doe" + Environment::NewLine +
+					  "Score = 3200000" + Environment::NewLine +
+					  "Date = 12/31/2010" + Environment::NewLine +
+					  "Time = 11:59:59";
+	Stream ^contentStream = gcnew MemoryStream(Encoding::ASCII->GetBytes(content));
+	try	{ file->Load(contentStream);	}
+	finally	{ delete contentStream;	}
+
+	IniSection ^scoreSection = file->Sections["Highest Score"];
+
+	String ^playerName = scoreSection->Keys["Name"]->Value;
+
+	// Retrieve key's value as long.
+	long playerScore;
+	scoreSection->Keys["Score"]->TryParseValue(playerScore);
+
+	// Retrieve key's value as DateTime.
+	DateTime scoreDate;
+	scoreSection->Keys["Date"]->TryParseValue(scoreDate);
+
+	// Retrieve key's value as TimeSpan.
+	TimeSpan gameTime;
+	scoreSection->Keys["Time"]->TryParseValue(gameTime);
+}
+
 void main()
 {
 	HelloWorld();
@@ -188,4 +226,6 @@ void main()
 	Custom();
 
 	Copy();
+
+	Parse();
 }
