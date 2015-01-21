@@ -13,6 +13,7 @@ namespace MadMilkman.Ini
     /// <para>To load (read) an INI file from a file's path or a stream use <see cref="O:MadMilkman.Ini.IniFile.Load">IniFile.Load</see> methods.</para>
     /// <para>To save (write) an INI file to a file's path or a stream use <see cref="O:MadMilkman.Ini.IniFile.Save">IniFile.Save</see> methods.</para>
     /// </remarks>
+    /// <seealso cref="http://en.wikipedia.org/wiki/INI_file">INI file format on Wikipedia.</seealso>
     public sealed class IniFile
     {
         internal readonly IniOptions options;

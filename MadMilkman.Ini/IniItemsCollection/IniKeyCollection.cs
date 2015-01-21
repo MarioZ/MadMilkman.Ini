@@ -5,6 +5,7 @@ namespace MadMilkman.Ini
     /// <summary>
     /// Represents a collection of <see cref="IniKey"/> items.
     /// </summary>
+    /// <seealso cref="IniKey"/>
     public sealed class IniKeyCollection : IniItemCollection<IniKey>
     {
         internal IniKeyCollection(IniFile parentFile, IniDuplication duplication, bool caseSensitive)

@@ -9,6 +9,7 @@ namespace MadMilkman.Ini
     /// Represents a base generic class for INI content item collections, <see cref="IniSectionCollection"/> and <see cref="IniKeyCollection"/>.
     /// </summary>
     /// <typeparam name="T"><see cref="IniItem"/> derived type.</typeparam>
+    /// <seealso cref="IniItem"/>
     [DebuggerDisplay("Count = {Count}"), DebuggerTypeProxy(typeof(DebugCollectionViewer<>))]
     public abstract class IniItemCollection<T> : IItemNameVerifier, IList<T> where T : IniItem
     {

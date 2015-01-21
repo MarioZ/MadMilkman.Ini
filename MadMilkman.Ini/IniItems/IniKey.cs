@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace MadMilkman.Ini
 {
@@ -7,12 +8,6 @@ namespace MadMilkman.Ini
     /// </summary>
     public sealed class IniKey : IniItem
     {
-        /* REMARKS:  Nicer implementation of Value property could be to define a new type, IniValue or IniString class.
-         *           We could implement implicit casting to/from string and explicit casting to any type that we wish to support.
-         * 
-         * CONSIDER: Explicit casting often leads to confusion, also this feels like an inappropriate usage of it.
-         *           My guess is that this could potentially lead to misinterpretation and thus create an unexpected behaviour. */
-
         /// <summary>
         /// Gets and sets <see cref="IniKey"/> value.
         /// </summary>
@@ -65,5 +60,61 @@ namespace MadMilkman.Ini
         /// <param name="destinationFile">Copied key's parent file.</param>
         /// <returns>Copied <see cref="IniKey"/> that belongs to a specified <see cref="IniFile"/>.</returns>
         public IniKey Copy(IniFile destinationFile) { return new IniKey(destinationFile, this); }
+
+        /// <summary>
+        /// Indicates whether the <see cref="IniKey.Value"/> can be converted to specified type.
+        /// </summary>
+        /// <param name="type">Type of the object to convert the <see cref="IniKey.Value"/> to.</param>
+        /// <returns><see langword="true"/> if the specified type is supported.</returns>
+        /// <remarks>
+        /// Currently supported types are:
+        /// <list type="bullet">
+        /// <item><description>System.Boolean</description></item>
+        /// <item><description>System.Byte</description></item>
+        /// <item><description>System.SByte</description></item>
+        /// <item><description>System.Int16</description></item>
+        /// <item><description>System.UInt16</description></item>
+        /// <item><description>System.Int32</description></item>
+        /// <item><description>System.UInt32</description></item>
+        /// <item><description>System.Int64</description></item>
+        /// <item><description>System.UInt64</description></item>
+        /// <item><description>System.Char</description></item>
+        /// <item><description>System.Single</description></item>
+        /// <item><description>System.Double</description></item>
+        /// <item><description>System.DateTime</description></item>
+        /// <item><description>System.TimeSpan</description></item>
+        /// </list>
+        /// </remarks>
+        public static bool IsSupportedValueType(Type type)
+        {
+            if (type == null)
+                throw new ArgumentNullException("type");
+
+            return type.IsPrimitive || type.Equals(typeof(DateTime)) || type.Equals(typeof(TimeSpan));
+        }
+
+        /// <summary>
+        /// Converts the <see cref="IniKey.Value"/> to an instance of the specified type.
+        /// </summary>
+        /// <param name="result">Uninitialized instance of a specific type which will hold the converted value if the conversion succeeds.</param>
+        /// <returns>Value that indicates whether the conversion succeeded.</returns>
+        /// <remarks>For supported types see the remarks of <see cref="IsSupportedValueType(Type)"/> method.</remarks>
+        public bool TryParseValue<T>(out T result)
+        {
+            var type = typeof(T);
+
+            if (!IsSupportedValueType(type))
+                throw new NotSupportedException();
+
+            var converter = System.ComponentModel.TypeDescriptor.GetConverter(type);
+            if (converter.IsValid(this.Value))
+            {
+                result = (T)converter.ConvertFromString(this.Value);
+                return true;
+            }
+
+            result = default(T);
+            return false;
+        }
     }
 }
