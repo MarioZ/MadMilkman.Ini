@@ -63,6 +63,7 @@
     <Compile Include="IniItemsCollection\IniSectionCollection.cs" />
     <Compile Include="IniReaderWriter\IniReader.cs" />
     <Compile Include="IniReaderWriter\IniWriter.cs" />
+    <Compile Include="IniValueParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

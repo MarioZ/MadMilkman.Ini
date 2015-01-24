@@ -81,16 +81,25 @@ namespace MadMilkman.Ini
         /// <item><description>System.Char</description></item>
         /// <item><description>System.Single</description></item>
         /// <item><description>System.Double</description></item>
+        /// <item><description>System.Decimal</description></item>
         /// <item><description>System.DateTime</description></item>
         /// <item><description>System.TimeSpan</description></item>
+        /// <item><description>System.Enum</description></item>
         /// </list>
+        /// Additionally both Array and List of the above types are supported.
         /// </remarks>
         public static bool IsSupportedValueType(Type type)
         {
             if (type == null)
                 throw new ArgumentNullException("type");
 
-            return type.IsPrimitive || type.Equals(typeof(DateTime)) || type.Equals(typeof(TimeSpan));
+            return type.IsPrimitive ||
+                   type.IsEnum ||
+                   type == typeof(Decimal) ||
+                   type == typeof(DateTime) ||
+                   type == typeof(TimeSpan) ||
+                   (type.IsArray && IsSupportedValueType(type.GetElementType())) ||
+                   (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>) && IsSupportedValueType(type.GetGenericArguments()[0]));
         }
 
         /// <summary>
@@ -99,22 +108,59 @@ namespace MadMilkman.Ini
         /// <param name="result">Uninitialized instance of a specific type which will hold the converted value if the conversion succeeds.</param>
         /// <typeparam name="T">Type of the object to convert the <see cref="IniKey.Value"/> to.</typeparam>
         /// <returns>Value that indicates whether the conversion succeeded.</returns>
-        /// <remarks>For supported types see the remarks of <see cref="IsSupportedValueType(Type)"/> method.</remarks>
+        /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
         public bool TryParseValue<T>(out T result)
         {
-            var type = typeof(T);
+            return IniValueParser<T>.TryParse(this.Value, out result);
+        }
 
-            if (!IsSupportedValueType(type))
-                throw new NotSupportedException();
-
-            var converter = System.ComponentModel.TypeDescriptor.GetConverter(type);
-            if (converter.IsValid(this.Value))
+        /// <summary>
+        /// Converts the <see cref="IniKey.Value"/> to an array of the specified type.
+        /// </summary>
+        /// <param name="results">Uninitialized array of a specific type which will hold the converted values if the conversion succeeds.</param>
+        /// <typeparam name="T">Type of the objects in array to convert the <see cref="IniKey.Value"/> to.</typeparam>
+        /// <returns>Value that indicates whether the conversion succeeded.</returns>
+        /// <remarks>For supported types see the remarks of <see cref="IsSupportedValueType(Type)"/> method.</remarks>
+        public bool TryParseValue<T>(out T[] results)
+        {
+            List<T> listResults;
+            if (this.TryParseValue<T>(out listResults))
             {
-                result = (T)converter.ConvertFromString(this.Value);
+                results = listResults.ToArray();
+                return true;
+            }
+            results = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Converts the <see cref="IniKey.Value"/> to a list of the specified type.
+        /// </summary>
+        /// <param name="results">Uninitialized list of a specific type which will hold the converted values if the conversion succeeds.</param>
+        /// <typeparam name="T">Type of the objects in list to convert the <see cref="IniKey.Value"/> to.</typeparam>
+        /// <returns>Value that indicates whether the conversion succeeded.</returns>
+        /// <remarks>For supported types see the remarks of <see cref="IsSupportedValueType(Type)"/> method.</remarks>
+        public bool TryParseValue<T>(out List<T> results)
+        {
+            if (!string.IsNullOrEmpty(this.Value) && this.Value[0] == '{' && this.Value[this.Value.Length - 1] == '}')
+            {
+                var listResults = new List<T>();
+                foreach (var value in this.Value.Split(','))
+                {
+                    T result;
+                    if (IniValueParser<T>.TryParse(value.Trim(), out result))
+                        listResults.Add(result);
+                    else
+                    {
+                        results = null;
+                        return false;
+                    }
+                }
+                results = listResults;
                 return true;
             }
 
-            result = default(T);
+            results = null;
             return false;
         }
     }
