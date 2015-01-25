@@ -19,6 +19,8 @@ namespace MadMilkman.Ini
         internal readonly IniOptions options;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IniSectionCollection sections;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly IniValueMappings valueMappings;
 
         /// <summary>
         /// Initializes a new instance of <see cref="IniFile"/> class.
@@ -36,12 +38,19 @@ namespace MadMilkman.Ini
 
             this.options = new IniOptions(options);
             this.sections = new IniSectionCollection(this, options.SectionDuplicate, options.SectionNameCaseSensitive);
+            this.valueMappings = new IniValueMappings(IniKey.IsSupportedValueType);
         }
 
         /// <summary>
         /// Gets file's sections.
         /// </summary>
         public IniSectionCollection Sections { get { return this.sections; } }
+
+        /// <summary>
+        /// Gets the mappings of <see cref="IniKey.Value"/>s and their results, used in <see cref="O:IniKey.TryParseValue{T}"/> methods.
+        /// </summary>
+        /// <remarks>Mapped value results have priority over parsing the value.</remarks>
+        public IniValueMappings ValueMappings { get { return this.valueMappings; } }
 
         /// <summary>
         /// Loads a file from a path.

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 
 namespace MadMilkman.Ini
@@ -111,7 +112,10 @@ namespace MadMilkman.Ini
         /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
         public bool TryParseValue<T>(out T result)
         {
-            return IniValueParser<T>.TryParse(this.Value, out result);
+            if (this.ParentFile.ValueMappings.TryGetResult<T>(this.Value, out result))
+                return true;
+            else
+                return IniValueParser<T>.TryParse(this.Value, out result);
         }
 
         /// <summary>
@@ -129,6 +133,7 @@ namespace MadMilkman.Ini
                 results = listResults.ToArray();
                 return true;
             }
+
             results = null;
             return false;
         }
@@ -145,10 +150,14 @@ namespace MadMilkman.Ini
             if (!string.IsNullOrEmpty(this.Value) && this.Value[0] == '{' && this.Value[this.Value.Length - 1] == '}')
             {
                 var listResults = new List<T>();
-                foreach (var value in this.Value.Split(','))
+                foreach (var value in this.Value.Substring(1, this.Value.Length - 2).Split(','))
                 {
+                    string trimedValue = value.Trim();
+
                     T result;
-                    if (IniValueParser<T>.TryParse(value.Trim(), out result))
+                    if (this.ParentFile.ValueMappings.TryGetResult<T>(trimedValue, out result))
+                        listResults.Add(result);
+                    else if (IniValueParser<T>.TryParse(trimedValue, out result))
                         listResults.Add(result);
                     else
                     {
@@ -156,6 +165,7 @@ namespace MadMilkman.Ini
                         return false;
                     }
                 }
+
                 results = listResults;
                 return true;
             }
