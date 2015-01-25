@@ -1,14 +1,14 @@
-1.0.1.2 Added support for mapping specific IniKey.Value to specific result object with IniFile.ValueMappings.
-        Mapped results have priority over parsing the value when using IniKey.TryParseValue methods.
-        Fixed issue with parsing key's value to enum.
-1.0.1.1 Added support for enums, decimals, arrays and lists in TryParseValue.
-        Performance improvements on TryParseValue methods.
+[1.0.1.2]  Added support for mapping specific IniKey.Value to specific result object with IniFile.ValueMappings.
+           Mapped results have priority over parsing the value when using IniKey.TryParseValue methods.
+           Fixed issue with parsing key's value to enum.
+[1.0.1.1]  Added support for enums, decimals, arrays and lists in TryParseValue.
+           Performance improvements on TryParseValue methods.
 
-1.0.1.0 NEW RELEASE
-1.0.0.4 Added support for converting IniKey.Value via IniKey.TryParseValue(out T).
-        Type's support can be checked by IniKey.IsSupportedValueType(Type) or read its remarks in documentation.
-1.0.0.3 Small performance improvement on reading and writing an INI file.
-1.0.0.2 Added support for creating IniSection's Keys from Dictionary and creating IniKey from KeyValuePair.
-1.0.0.1 Added support for loading file via TextReader and saving file via TextWriter.
+[1.0.1.0]  NEW RELEASE
+[1.0.0.4]  Added support for converting IniKey.Value via IniKey.TryParseValue(out T).
+           Type's support can be checked by IniKey.IsSupportedValueType(Type) or read its remarks in documentation.
+[1.0.0.3]  Small performance improvement on reading and writing an INI file.
+[1.0.0.2]  Added support for creating IniSection's Keys from Dictionary and creating IniKey from KeyValuePair.
+[1.0.0.1]  Added support for loading file via TextReader and saving file via TextWriter.
 
-1.0.0.0 INITIAL RELEASE
+[1.0.0.0]  INITIAL RELEASE
