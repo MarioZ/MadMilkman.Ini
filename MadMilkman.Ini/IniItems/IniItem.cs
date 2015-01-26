@@ -18,9 +18,9 @@ namespace MadMilkman.Ini
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IniFile parentFile;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly IniComment leadingComment;
+        private IniComment leadingComment;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly IniComment trailingComment;
+        private IniComment trailingComment;
 
         /// <summary>
         /// Gets and sets the name of the current <see cref="IniItem"/>.
@@ -46,12 +46,34 @@ namespace MadMilkman.Ini
         /// <summary>
         /// Gets the <see cref="IniComment"/> object that represents a comment that follows this <see cref="IniItem"/> on the same line.
         /// </summary>
-        public IniComment LeadingComment { get { return this.leadingComment; } }
+        public IniComment LeadingComment
+        {
+            get
+            {
+                if (this.leadingComment == null)
+                    this.leadingComment = new IniComment(IniCommentType.Leading);
+                return this.leadingComment;
+            }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal bool HasLeadingComment { get { return this.leadingComment != null; } }
 
         /// <summary>
         /// Gets the <see cref="IniComment"/> object that represents a comments that occur before this <see cref="IniItem"/>.
         /// </summary>
-        public IniComment TrailingComment { get { return this.trailingComment; } }
+        public IniComment TrailingComment
+        {
+            get
+            {
+                if (this.trailingComment == null)
+                    this.trailingComment = new IniComment(IniCommentType.Trailing);
+                return this.trailingComment;
+            }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal bool HasTrailingComment { get { return this.trailingComment != null; } }
 
         /// <summary>
         /// Gets the <see cref="IniFile"/> to which this <see cref="IniItem"/> belongs to.
@@ -70,8 +92,7 @@ namespace MadMilkman.Ini
 
             this.name = name;
             this.parentFile = parentFile;
-            this.leadingComment = new IniComment(IniCommentType.Leading);
-            this.trailingComment = (trailingComment) ?? new IniComment(IniCommentType.Trailing);
+            this.trailingComment = trailingComment;
         }
 
         // Deep copy constructor.
@@ -82,8 +103,10 @@ namespace MadMilkman.Ini
 
             this.name = sourceItem.name;
             this.parentFile = parentFile;
-            this.leadingComment = new IniComment(sourceItem.leadingComment);
-            this.trailingComment = new IniComment(sourceItem.trailingComment);
+            if (sourceItem.HasLeadingComment)
+                this.leadingComment = new IniComment(sourceItem.leadingComment);
+            if (sourceItem.HasTrailingComment)
+                this.trailingComment = new IniComment(sourceItem.trailingComment);
         }
     }
 }

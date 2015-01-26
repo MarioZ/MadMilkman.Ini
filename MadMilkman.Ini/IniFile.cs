@@ -20,7 +20,7 @@ namespace MadMilkman.Ini
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IniSectionCollection sections;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly IniValueMappings valueMappings;
+        private IniValueMappings valueMappings;
 
         /// <summary>
         /// Initializes a new instance of <see cref="IniFile"/> class.
@@ -38,7 +38,6 @@ namespace MadMilkman.Ini
 
             this.options = new IniOptions(options);
             this.sections = new IniSectionCollection(this, options.SectionDuplicate, options.SectionNameCaseSensitive);
-            this.valueMappings = new IniValueMappings(IniKey.IsSupportedValueType);
         }
 
         /// <summary>
@@ -50,7 +49,18 @@ namespace MadMilkman.Ini
         /// Gets the mappings of <see cref="IniKey.Value"/>s and their results, used in <see cref="O:IniKey.TryParseValue{T}"/> methods.
         /// </summary>
         /// <remarks>Mapped value results have priority over parsing the value.</remarks>
-        public IniValueMappings ValueMappings { get { return this.valueMappings; } }
+        public IniValueMappings ValueMappings
+        {
+            get
+            {
+                if (this.valueMappings == null)
+                    this.valueMappings = new IniValueMappings(IniKey.IsSupportedValueType);
+                return this.valueMappings;
+            }
+        }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal bool HasValueMappings { get { return this.valueMappings != null; } }
 
         /// <summary>
         /// Loads a file from a path.

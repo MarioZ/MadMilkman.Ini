@@ -9,7 +9,6 @@ namespace MadMilkman.Ini
     /// </summary>
     public sealed class IniValueMappings
     {
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IDictionary<string, object> mappings;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly Predicate<Type> mappedTypeVerifier;

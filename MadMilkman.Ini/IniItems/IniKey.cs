@@ -112,7 +112,7 @@ namespace MadMilkman.Ini
         /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
         public bool TryParseValue<T>(out T result)
         {
-            if (this.ParentFile.ValueMappings.TryGetResult<T>(this.Value, out result))
+            if (this.ParentFile.HasValueMappings && this.ParentFile.ValueMappings.TryGetResult<T>(this.Value, out result))
                 return true;
             else
                 return IniValueParser<T>.TryParse(this.Value, out result);
@@ -155,7 +155,7 @@ namespace MadMilkman.Ini
                     string trimedValue = value.Trim();
 
                     T result;
-                    if (this.ParentFile.ValueMappings.TryGetResult<T>(trimedValue, out result))
+                    if (this.ParentFile.HasValueMappings && this.ParentFile.ValueMappings.TryGetResult<T>(trimedValue, out result))
                         listResults.Add(result);
                     else if (IniValueParser<T>.TryParse(trimedValue, out result))
                         listResults.Add(result);

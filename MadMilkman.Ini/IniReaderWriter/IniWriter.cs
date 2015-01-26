@@ -39,16 +39,12 @@ namespace MadMilkman.Ini
 
         private void WriteSection(IniSection section)
         {
-            this.WriteTrailingComment(section.TrailingComment, section.LeadingComment.EmptyLinesBefore);
-
-            this.writer.Write(
+            this.WriteItem(section,
                 // E.g. "   [SectionName]"
                 new String(' ', section.LeftIndentation) +
                 this.options.sectionWrapperStart +
                 section.Name +
                 this.options.sectionWrapperEnd);
-
-            this.WriteLeadingComment(section.LeadingComment);
 
             this.WriteKeys(section.Keys);
         }
@@ -56,29 +52,35 @@ namespace MadMilkman.Ini
         private void WriteKeys(IniKeyCollection keys)
         {
             foreach (IniKey key in keys)
-                this.WriteKey(key);
+                this.WriteItem(key,
+                    // E.g. "   KeyName = KeyValue"
+                    new String(' ', key.LeftIndentation) +
+                    key.Name +
+                    ((this.options.KeySpaceAroundDelimiter) ? " " : string.Empty) +
+                    (char)this.options.KeyDelimiter +
+                    ((this.options.KeySpaceAroundDelimiter) ? " " : string.Empty) +
+                    key.Value);
         }
 
-        private void WriteKey(IniKey key)
+        private void WriteItem(IniItem item, string itemContent)
         {
-            this.WriteTrailingComment(key.TrailingComment, key.LeadingComment.EmptyLinesBefore);
+            if (item.HasTrailingComment)
+                this.WriteTrailingComment(item.TrailingComment);
 
-            this.writer.Write(
-                // E.g. "   KeyName=KeyValue"
-                new String(' ', key.LeftIndentation) +
-                key.Name +
-                ((this.options.KeySpaceAroundDelimiter) ? " " : string.Empty) +
-                (char)this.options.KeyDelimiter +
-                ((this.options.KeySpaceAroundDelimiter) ? " " : string.Empty) +
-                key.Value);
+            if (item.HasLeadingComment)
+                this.WriteEmptyLines(item.LeadingComment.EmptyLinesBefore);
 
-            this.WriteLeadingComment(key.LeadingComment);
-        }
+            this.writer.Write(itemContent);
 
-        private void WriteTrailingComment(IniComment trailingComment, int leadingCommentEmptyLinesBefore)
-        {
-            for (int i = 0; i < trailingComment.EmptyLinesBefore; i++)
+            if (item.HasLeadingComment)
+                this.WriteLeadingComment(item.LeadingComment);
+            else
                 this.writer.WriteLine();
+        }
+
+        private void WriteTrailingComment(IniComment trailingComment)
+        {
+            this.WriteEmptyLines(trailingComment.EmptyLinesBefore);
 
             // E.g. "   ;CommentText
             //          ;CommentText"
@@ -88,9 +90,6 @@ namespace MadMilkman.Ini
                         new String(' ', trailingComment.LeftIndentation) +
                         (char)this.options.CommentStarter +
                         commentLine);
-
-            for (int i = 0; i < leadingCommentEmptyLinesBefore; i++)
-                this.writer.WriteLine();
         }
 
         private void WriteLeadingComment(IniComment leadingComment)
@@ -102,6 +101,12 @@ namespace MadMilkman.Ini
                     (char)this.options.CommentStarter +
                     leadingComment.Text);
             else
+                this.writer.WriteLine();
+        }
+
+        private void WriteEmptyLines(int count)
+        {
+            for (int i = 0; i < count; i++)
                 this.writer.WriteLine();
         }
     }
