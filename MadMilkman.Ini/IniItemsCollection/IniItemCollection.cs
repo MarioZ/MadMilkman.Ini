@@ -54,7 +54,12 @@ namespace MadMilkman.Ini
         /// <summary>
         /// Removes all items from this collection.
         /// </summary>
-        public void Clear() { this.items.Clear(); }
+        public void Clear()
+        {
+            foreach (var item in this.items)
+                item.ParentCollectionCore = null;
+            this.items.Clear();
+        }
 
         /// <summary>
         /// Determines whether an item is in this collection.

@@ -140,6 +140,30 @@ namespace MadMilkman.Ini.Tests
         }
 
         [TestMethod]
+        public void UpdateIniFileCorrectTest()
+        {
+            var file = new IniFile(new IniOptions());
+            var section = new IniSection(file, "Section",
+                              new IniKey(file, "Key"));
+
+            file.Sections.Add(section);
+            Assert.AreEqual(1, file.Sections.Count);
+
+            file.Sections.Clear();
+            Assert.AreEqual(0, file.Sections.Count);
+
+            file.Sections.Add(section);
+            Assert.AreEqual(1, file.Sections.Count);
+
+            var key = section.Keys[0];
+            section.Keys.RemoveAt(0);
+            Assert.AreEqual(0, section.Keys.Count);
+
+            section.Keys.Add(key);
+            Assert.AreEqual(1, section.Keys.Count);
+        }
+
+        [TestMethod]
         public void UpdateIniFileIncorrectTest()
         {
             var file = new IniFile(new IniOptions());
