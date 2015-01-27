@@ -175,30 +175,42 @@ Module IniSamples
 
     Private Sub Parse()
         Dim file As New IniFile()
-        Dim content As String = "[Highest Score]" + Environment.NewLine +
-                                "Name = John Doe" + Environment.NewLine +
-                                "Score = 3200000" + Environment.NewLine +
-                                "Date = 12/31/2010" + Environment.NewLine +
-                                "Time = 11:59:59"
+        Dim content As String = "[Player]" + Environment.NewLine +
+                                "Full Name = John Doe" + Environment.NewLine +
+                                "Birthday = 12/31/1999" + Environment.NewLine +
+                                "Married = Yes" + Environment.NewLine +
+                                "Score = 9999999" + Environment.NewLine +
+                                "Game Time = 00:59:59"
         Using stream As Stream = New MemoryStream(Encoding.ASCII.GetBytes(content))
             file.Load(stream)
         End Using
 
-        Dim scoreSection As IniSection = file.Sections("Highest Score")
+        ' Map "yes" value as "true" boolean.
+        file.ValueMappings.Add("yes", True)
+        ' Map "no" value as "false" boolean.
+        file.ValueMappings.Add("no", False)
 
-        Dim playerName As String = scoreSection.Keys("Name").Value
+        Dim playerSection As IniSection = file.Sections("Player")
 
-        ' Retrieve key's value as long.
+        '  Retrieve player's name.
+        Dim playerName As String = playerSection.Keys("Full Name").Value
+
+        ' Retrieve player's birthday as DateTime.
+        Dim playerBirthday As DateTime
+        playerSection.Keys("Birthday").TryParseValue(playerBirthday)
+
+        ' Retrieve player's marital status as bool.
+        ' TryParseValue succeeds due to the mapping of "yes" value to "true" boolean.
+        Dim playerMarried As Boolean
+        playerSection.Keys("Married").TryParseValue(playerMarried)
+
+        ' Retrieve player's score as long.
         Dim playerScore As Long
-        scoreSection.Keys("Score").TryParseValue(playerScore)
+        playerSection.Keys("Score").TryParseValue(playerScore)
 
-        ' Retrieve key's value as DateTime.
-        Dim scoreDate As DateTime
-        scoreSection.Keys("Date").TryParseValue(scoreDate)
-
-        ' Retrieve key's value as TimeSpan.
-        Dim gameTime As TimeSpan
-        scoreSection.Keys("Time").TryParseValue(gameTime)
+        ' Retrieve player's game time as TimeSpan.
+        Dim playerGameTime As TimeSpan
+        playerSection.Keys("Game Time").TryParseValue(playerGameTime)
     End Sub
 
     Sub Main()

@@ -185,29 +185,41 @@ namespace MadMilkman.Ini.Samples.CS
         private static void Parse()
         {
             IniFile file = new IniFile();
-            string content = "[Highest Score]" + Environment.NewLine +
-                              "Name = John Doe" + Environment.NewLine +
-                              "Score = 3200000" + Environment.NewLine +
-                              "Date = 12/31/2010" + Environment.NewLine +
-                              "Time = 11:59:59";
+            string content = "[Player]" + Environment.NewLine +
+                              "Full Name = John Doe" + Environment.NewLine +
+                              "Birthday = 12/31/1999" + Environment.NewLine +
+                              "Married = Yes" + Environment.NewLine +
+                              "Score = 9999999" + Environment.NewLine +
+                              "Game Time = 00:59:59";
             using (Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(content)))
                 file.Load(stream);
 
-            IniSection scoreSection = file.Sections["Highest Score"];
+            // Map "yes" value as "true" boolean.
+            file.ValueMappings.Add("yes", true);
+            // Map "no" value as "false" boolean.
+            file.ValueMappings.Add("no", false);
 
-            string playerName = scoreSection.Keys["Name"].Value;
+            IniSection playerSection = file.Sections["Player"];
 
-            // Retrieve key's value as long.
+            // Retrieve player's name.
+            string playerName = playerSection.Keys["Full Name"].Value;
+
+            // Retrieve player's birthday as DateTime.
+            DateTime playerBirthday;
+            playerSection.Keys["Birthday"].TryParseValue(out playerBirthday);
+
+            // Retrieve player's marital status as bool.
+            // TryParseValue succeeds due to the mapping of "yes" value to "true" boolean.
+            bool playerMarried;
+            playerSection.Keys["Married"].TryParseValue(out playerMarried);
+
+            // Retrieve player's score as long.
             long playerScore;
-            scoreSection.Keys["Score"].TryParseValue(out playerScore);
+            playerSection.Keys["Score"].TryParseValue(out playerScore);
 
-            // Retrieve key's value as DateTime.
-            DateTime scoreDate;
-            scoreSection.Keys["Date"].TryParseValue(out scoreDate);
-
-            // Retrieve key's value as TimeSpan.
-            TimeSpan gameTime;
-            scoreSection.Keys["Time"].TryParseValue(out gameTime);
+            // Retrieve player's game time as TimeSpan.
+            TimeSpan playerGameTime;
+            playerSection.Keys["Game Time"].TryParseValue(out playerGameTime);
         }
 
         static void Main()

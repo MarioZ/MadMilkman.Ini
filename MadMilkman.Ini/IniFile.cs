@@ -46,7 +46,7 @@ namespace MadMilkman.Ini
         public IniSectionCollection Sections { get { return this.sections; } }
 
         /// <summary>
-        /// Gets the mappings of <see cref="IniKey.Value"/>s and their results, used in <see cref="O:IniKey.TryParseValue{T}"/> methods.
+        /// Gets the mappings of <see cref="IniKey.Value"/>s and their results, used in <see cref="O:MadMilkman.Ini.IniKey.TryParseValue"/> methods.
         /// </summary>
         /// <remarks>Mapped value results have priority over parsing the value.</remarks>
         public IniValueMappings ValueMappings

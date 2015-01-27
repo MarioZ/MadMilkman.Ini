@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace MadMilkman.Ini
 {
     /// <summary>
-    /// Represents a collection of mapped <see cref="IniKey.Value"/>s and their results, used in <see cref="O:MadMilkman.Ini.IniKey.TryParseValue{T}">IniKey.TryParseValue</see> methods.
+    /// Represents a collection of mapped <see cref="IniKey.Value"/>s and their results, used in <see cref="O:MadMilkman.Ini.IniKey.TryParseValue"/> methods.
     /// </summary>
     public sealed class IniValueMappings
     {

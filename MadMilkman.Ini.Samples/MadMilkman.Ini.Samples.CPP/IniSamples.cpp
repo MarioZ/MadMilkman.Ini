@@ -9,13 +9,13 @@ using namespace MadMilkman::Ini;
 void HelloWorld()
 {
 	// Create new file.
-	IniFile ^file = gcnew IniFile();
+	IniFile^ file = gcnew IniFile();
 
 	// Add new section.
-	IniSection ^section = file->Sections->Add("Section Name");
+	IniSection^ section = file->Sections->Add("Section Name");
 
 	// Add new key and its value.
-	IniKey ^key = section->Keys->Add("Key Name", "Hello World");
+	IniKey^ key = section->Keys->Add("Key Name", "Hello World");
 
 	// Read file's specific value.
 	Console::WriteLine(file->Sections["Section Name"]->Keys["Key Name"]->Value);
@@ -24,10 +24,10 @@ void HelloWorld()
 void Create()
 {
 	// Create new file with default formatting.
-	IniFile ^file = gcnew IniFile(gcnew IniOptions());
+	IniFile^ file = gcnew IniFile(gcnew IniOptions());
 	
 	// Add new content.
-	IniSection ^section = gcnew IniSection(file, IniSection::GlobalSectionName);
+	IniSection^ section = gcnew IniSection(file, IniSection::GlobalSectionName);
 	IniKey ^key = gcnew IniKey(file, "Key 1", "Value 1");
 	file->Sections->Add(section);
 	section->Keys->Add(key);
@@ -42,7 +42,7 @@ void Create()
 			gcnew IniKey(file, "Key 3.2", "Value 3.2")));
 
 	// Add new content.
-	Dictionary<String^, String^> ^collection = gcnew Dictionary<String^, String^>();
+	Dictionary<String^, String^>^ collection = gcnew Dictionary<String^, String^>();
 	collection->Add("Key 4.1", "Value 4.1");
 	collection->Add("Key 4.2", "Value 4.2");
 	file->Sections->Add(
@@ -51,32 +51,32 @@ void Create()
 
 void Load()
 {
-	IniOptions ^options = gcnew IniOptions();
-	IniFile ^iniFile = gcnew IniFile(options);
+	IniOptions^ options = gcnew IniOptions();
+	IniFile^ iniFile = gcnew IniFile(options);
 
 	// Load file from path.
 	iniFile->Load("..\\MadMilkman.Ini.Samples.Files\\Load Example.ini");
 
 	// Load file from stream.
-	Stream ^fileStream = File::OpenRead("..\\MadMilkman.Ini.Samples.Files\\Load Example.ini");
+	Stream^ fileStream = File::OpenRead("..\\MadMilkman.Ini.Samples.Files\\Load Example.ini");
 	try { iniFile->Load(fileStream); }
 	finally	{ delete fileStream; }
 
 	// Load file's content from string.
-	String ^iniContent = "[Section 1]" + Environment::NewLine + 
+	String^ iniContent = "[Section 1]" + Environment::NewLine + 
 						 "Key 1.1 = Value 1.1" + Environment::NewLine + 
 						 "Key 1.2 = Value 1.2" + Environment::NewLine + 
 						 "Key 1.3 = Value 1.3" + Environment::NewLine + 
 						 "Key 1.4 = Value 1.4";
-	Stream ^contentStream = gcnew MemoryStream(options->Encoding->GetBytes(iniContent));
+	Stream^ contentStream = gcnew MemoryStream(options->Encoding->GetBytes(iniContent));
 	try	{ iniFile->Load(contentStream);	}
 	finally	{ delete contentStream;	}
 
 	// Read file's content.
-	for each (IniSection ^section in iniFile->Sections)
+	for each (IniSection^ section in iniFile->Sections)
 	{
 		Console::WriteLine("SECTION: {0}", section->Name);
-		for each (IniKey ^key in section->Keys)
+		for each (IniKey^ key in section->Keys)
 		{
 			Console::WriteLine("KEY: {0}, VALUE: {1}", key->Name, key->Value);
 		}
@@ -85,7 +85,7 @@ void Load()
 
 void Style()
 {
-	IniFile ^file = gcnew IniFile();
+	IniFile^ file = gcnew IniFile();
 	file->Sections->Add("Section 1")->Keys->Add("Key 1", "Value 1");
 	file->Sections->Add("Section 2")->Keys->Add("Key 2", "Value 2");
 	file->Sections->Add("Section 3")->Keys->Add("Key 3", "Value 3");
@@ -110,8 +110,8 @@ void Style()
 
 void Save()
 {
-	IniOptions ^options = gcnew IniOptions();
-	IniFile ^iniFile = gcnew IniFile(options);
+	IniOptions^ options = gcnew IniOptions();
+	IniFile^ iniFile = gcnew IniFile(options);
 	iniFile->Sections->Add(
 		gcnew IniSection(iniFile, "Section 1",
 			gcnew IniKey(iniFile, "Key 1.1", "Value 1.1"),
@@ -123,13 +123,13 @@ void Save()
 	iniFile->Save("..\\MadMilkman.Ini.Samples.Files\\Save Example.ini");
 
 	// Save file to stream.
-	Stream ^fileStream = File::Create("..\\MadMilkman.Ini.Samples.Files\\Save Example.ini");
+	Stream^ fileStream = File::Create("..\\MadMilkman.Ini.Samples.Files\\Save Example.ini");
 	try { iniFile->Save(fileStream); }
 	finally	{ delete fileStream; }
 
 	// Save file's content to string.
-	String ^iniContent;
-	Stream ^contentStream = gcnew MemoryStream();
+	String^ iniContent;
+	Stream^ contentStream = gcnew MemoryStream();
 	try
 	{
 		iniFile->Save(contentStream);
@@ -142,13 +142,13 @@ void Save()
 
 void Custom()
 {
-	IniOptions ^options = gcnew IniOptions();
+	IniOptions^ options = gcnew IniOptions();
 	options->CommentStarter = IniCommentStarter::Hash;
 	options->KeyDelimiter = IniKeyDelimiter::Colon;
 	options->KeySpaceAroundDelimiter = true;
 	options->SectionWrapper = IniSectionWrapper::CurlyBrackets;
 	options->Encoding = Encoding::UTF8;
-	IniFile ^file = gcnew IniFile(options);
+	IniFile^ file = gcnew IniFile(options);
 
 	// Load file.
 	file->Load("..\\MadMilkman.Ini.Samples.Files\\Custom Example Input.ini");
@@ -163,11 +163,11 @@ void Custom()
 void Copy()
 {
 	// Create new file.
-	IniFile ^file = gcnew IniFile();
+	IniFile^ file = gcnew IniFile();
 
 	// Add new content.
-	IniSection ^section = file->Sections->Add("Section");
-	IniKey ^key = section->Keys->Add("Key");
+	IniSection^ section = file->Sections->Add("Section");
+	IniKey^ key = section->Keys->Add("Key");
 
 	// Add duplicate section.
 	file->Sections->Add(section->Copy());
@@ -176,7 +176,7 @@ void Copy()
 	section->Keys->Add(key->Copy());
 
 	// Create new file.
-	IniFile ^newFile = gcnew IniFile(gcnew IniOptions());
+	IniFile^ newFile = gcnew IniFile(gcnew IniOptions());
 
 	// Import first file's section to second file.
 	newFile->Sections->Add(section->Copy(newFile));
@@ -184,31 +184,43 @@ void Copy()
 
 void Parse()
 {
-	IniFile ^file = gcnew IniFile();
-	String ^content = "[Highest Score]" + Environment::NewLine + 
-					  "Name = John Doe" + Environment::NewLine +
-					  "Score = 3200000" + Environment::NewLine +
-					  "Date = 12/31/2010" + Environment::NewLine +
-					  "Time = 11:59:59";
-	Stream ^contentStream = gcnew MemoryStream(Encoding::ASCII->GetBytes(content));
+	IniFile^ file = gcnew IniFile();
+	String^ content = "[Player]" + Environment::NewLine +
+					  "Full Name = John Doe" + Environment::NewLine +
+					  "Birthday = 12/31/1999" + Environment::NewLine +
+					  "Married = Yes" + Environment::NewLine +
+					  "Score = 9999999" + Environment::NewLine +
+					  "Game Time = 00:59:59";
+	Stream^ contentStream = gcnew MemoryStream(Encoding::ASCII->GetBytes(content));
 	try	{ file->Load(contentStream);	}
 	finally	{ delete contentStream;	}
 
-	IniSection ^scoreSection = file->Sections["Highest Score"];
+	// Map "yes" value as "true" boolean.
+	file->ValueMappings->Add("yes", true);
+	// Map "no" value as "false" boolean.
+	file->ValueMappings->Add("no", false);
 
-	String ^playerName = scoreSection->Keys["Name"]->Value;
+	IniSection^ playerSection = file->Sections["Player"];
 
-	// Retrieve key's value as long.
+	// Retrieve player's name.
+	String^ playerName = playerSection->Keys["Full Name"]->Value;
+
+	// Retrieve player's birthday as DateTime.
+	DateTime playerBirthday;
+	playerSection->Keys["Birthday"]->TryParseValue(playerBirthday);
+
+	// Retrieve player's marital status as bool.
+	// TryParseValue succeeds due to the mapping of "yes" value to "true" boolean.
+	bool playerMarried;
+	playerSection->Keys["Married"]->TryParseValue(playerMarried);
+
+	// Retrieve player's score as long.
 	long playerScore;
-	scoreSection->Keys["Score"]->TryParseValue(playerScore);
+	playerSection->Keys["Score"]->TryParseValue(playerScore);
 
-	// Retrieve key's value as DateTime.
-	DateTime scoreDate;
-	scoreSection->Keys["Date"]->TryParseValue(scoreDate);
-
-	// Retrieve key's value as TimeSpan.
-	TimeSpan gameTime;
-	scoreSection->Keys["Time"]->TryParseValue(gameTime);
+	// Retrieve player's game time as TimeSpan.
+	TimeSpan playerGameTime;
+	playerSection->Keys["Game Time"]->TryParseValue(playerGameTime);
 }
 
 void main()

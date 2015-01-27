@@ -124,7 +124,7 @@ namespace MadMilkman.Ini
         /// <param name="results">Uninitialized array of a specific type which will hold the converted values if the conversion succeeds.</param>
         /// <typeparam name="T">Type of the objects in array to convert the <see cref="IniKey.Value"/> to.</typeparam>
         /// <returns>Value that indicates whether the conversion succeeded.</returns>
-        /// <remarks>For supported types see the remarks of <see cref="IsSupportedValueType(Type)"/> method.</remarks>
+        /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
         public bool TryParseValue<T>(out T[] results)
         {
             List<T> listResults;
@@ -144,7 +144,7 @@ namespace MadMilkman.Ini
         /// <param name="results">Uninitialized list of a specific type which will hold the converted values if the conversion succeeds.</param>
         /// <typeparam name="T">Type of the objects in list to convert the <see cref="IniKey.Value"/> to.</typeparam>
         /// <returns>Value that indicates whether the conversion succeeded.</returns>
-        /// <remarks>For supported types see the remarks of <see cref="IsSupportedValueType(Type)"/> method.</remarks>
+        /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
         public bool TryParseValue<T>(out List<T> results)
         {
             if (!string.IsNullOrEmpty(this.Value) && this.Value[0] == '{' && this.Value[this.Value.Length - 1] == '}')

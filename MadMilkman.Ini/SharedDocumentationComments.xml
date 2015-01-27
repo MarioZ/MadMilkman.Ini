@@ -13,7 +13,7 @@
   <Comment name="TryParseValueSupport">
     <remarks>
       <para>For supported types see the remarks of <see cref="IsSupportedValueType(Type)"/> method.</para>
-      <para>Mapped value results in <see cref="IniKey.ValueMappings"/> have priority over parsing the value.</para>
+      <para>Mapped value results in <see cref="IniFile.ValueMappings"/> have priority over parsing the value.</para>
     </remarks>
   </Comment>
 </Comments>
