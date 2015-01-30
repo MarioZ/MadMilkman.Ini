@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace MadMilkman.Ini.Tests
 {
-    [TestClass]
+    [TestFixture, Category("Creating & updating IniFile")]
     public class IniFileCreateUpdateTests
     {
-        [TestMethod]
+        [Test]
         public void CreateIniFileBasicTest()
         {
-            var file = new IniFile(new IniOptions());
+            var file = new IniFile();
 
             var section1 = file.Sections.Add("Section 1.");
             var section2 = file.Sections.Add("Section 2.");
@@ -39,10 +39,10 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Value 3.", key3.Value);
         }
 
-        [TestMethod]
+        [Test]
         public void CreateIniFileAdvanceTest()
         {
-            var file = new IniFile(new IniOptions());
+            var file = new IniFile();
 
             file.Sections.Add(
                 new IniSection(file, "Section 1.",
@@ -81,7 +81,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Value 3.2.", file.Sections[2].Keys[1].Value);
         }
 
-        [TestMethod]
+        [Test]
         public void CreateIniFileExpertTest()
         {
             var dictionary = new Dictionary<string, string>()
@@ -92,7 +92,7 @@ namespace MadMilkman.Ini.Tests
                 { "Key 2.4.", "Value 2.4." }
             };
 
-            var file = new IniFile(new IniOptions());
+            var file = new IniFile();
             file.Sections.Add("Section 1.").Keys.Add(new KeyValuePair<string, string>("Key 1.1.", "Value 1.1."));
             file.Sections.Add("Section 2.", dictionary);
 
@@ -116,10 +116,10 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Value 2.4.", file.Sections[1].Keys[3].Value);
         }
 
-        [TestMethod]
+        [Test]
         public void UpdateIniFileLinqTest()
         {
-            var file = new IniFile(new IniOptions());
+            var file = new IniFile();
 
             var section1 = file.Sections.Add("Section 1.");
 
@@ -139,10 +139,10 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Value 1.2.", values.Last());
         }
 
-        [TestMethod]
+        [Test]
         public void UpdateIniFileCorrectTest()
         {
-            var file = new IniFile(new IniOptions());
+            var file = new IniFile();
             var section = new IniSection(file, "Section",
                               new IniKey(file, "Key"));
 
@@ -163,43 +163,31 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual(1, section.Keys.Count);
         }
 
-        [TestMethod]
-        public void UpdateIniFileIncorrectTest()
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void UpdateIniFileIncorrectBasicTest()
         {
-            var file = new IniFile(new IniOptions());
+            var file = new IniFile();
 
-            file.Sections.Add(
-                new IniSection(file, "Section",
-                    new IniKey(file, "Key")));
-            var section = file.Sections[0];
+            var section = file.Sections.Add("Section");
 
-            try
-            {
-                file.Sections.Add(section);
-                Assert.Fail();
-            }
-            catch (InvalidOperationException)
-            {
-                Assert.AreEqual(1, file.Sections.Count);
-            }
-
-            var newFile = new IniFile(new IniOptions());
-
-            try
-            {
-                newFile.Sections.Add(section);
-                Assert.Fail();
-            }
-            catch (InvalidOperationException)
-            {
-                Assert.AreEqual(0, newFile.Sections.Count);
-            }
+            file.Sections.Add(section);
         }
 
-        [TestMethod]
-        public void UpdateIniFileCopyTest()
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void UpdateIniFileIncorrectAdvanceTest()
         {
             var file = new IniFile(new IniOptions());
+
+            var section = file.Sections.Add("Section");
+
+            var newFile = new IniFile(new IniOptions());
+            newFile.Sections.Add(section);
+        }
+
+        [Test]
+        public void UpdateIniFileCopyTest()
+        {
+            var file = new IniFile();
             file.Sections.Add(
                 new IniSection(file, "Section",
                     new IniKey(file, "Key", "Value")));
@@ -207,7 +195,7 @@ namespace MadMilkman.Ini.Tests
             file.Sections.Add(section.Copy());
 
             Assert.AreEqual(2, file.Sections.Count);
-            
+
             section.Name = "S";
             section.Keys[0].Name = "K";
             section.Keys[0].Value = "V";
@@ -217,7 +205,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Key", section.Keys[0].Name);
             Assert.AreEqual("Value", section.Keys[0].Value);
 
-            var newFile = new IniFile(new IniOptions());
+            var newFile = new IniFile();
             newFile.Sections.Add(section.Copy(newFile));
 
             Assert.AreEqual(1, newFile.Sections.Count);
@@ -230,12 +218,12 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Section", section.Name);
             Assert.AreEqual("Key", section.Keys[0].Name);
             Assert.AreEqual("Value", section.Keys[0].Value);
-            
+
             section.Keys.Add(section.Keys[0].Copy());
             Assert.AreEqual(2, section.Keys.Count);
         }
 
-        [TestMethod]
+        [Test]
         public void UpdateIgnoreDuplicatesTest()
         {
             var options = new IniOptions()
@@ -275,46 +263,39 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("KEY", file.Sections[0].Keys[0].Name);
         }
 
-        [TestMethod]
-        public void UpdateDisallowDuplicatesTest()
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void UpdateDisallowDuplicatesSectionsTest()
         {
             var options = new IniOptions()
             {
-                KeyDuplicate = IniDuplication.Disallowed,
-                SectionDuplicate = IniDuplication.Disallowed,
-            };
+                SectionDuplicate = IniDuplication.Disallowed
+                };
 
             var file = new IniFile(options);
             file.Sections.Add("SECTION1").Keys.Add("KEY1");
             var section = new IniSection(file, "SECTION1");
-
-            try
-            {
-                file.Sections.Add(section);
-                Assert.Fail();
-            }
-            catch (InvalidOperationException)
-            {
-                Assert.AreEqual(1, file.Sections.Count);
-            }
-
-            section.Name = "SECTION2";
             file.Sections.Add(section);
+        }
+
+        [Test, ExpectedException(typeof(InvalidOperationException))]
+        public void UpdateDisallowDuplicatesKeysTest()
+        {
+            var options = new IniOptions()
+            {
+                KeyDuplicate = IniDuplication.Disallowed,
+            };
+
+            var file = new IniFile(options);
+            file.Sections.Add("SECTION1").Keys.Add("KEY1");
+            file.Sections.Add("SECTION1").Keys.Add("KEY1");
+
             Assert.AreEqual(2, file.Sections.Count);
+            Assert.AreEqual(1, file.Sections[0].Keys.Count);
+            Assert.AreEqual(1, file.Sections[1].Keys.Count);
+
             var key = new IniKey(file, "KEY1");
 
-            try
-            {
-                file.Sections[0].Keys.Add(key);
-                Assert.Fail();
-            }
-            catch (InvalidOperationException)
-            {
-                Assert.AreEqual(1, file.Sections[0].Keys.Count);
-            }
-
-            file.Sections[1].Keys.Add(key);
-            Assert.AreEqual(1, file.Sections[1].Keys.Count);
+            file.Sections[0].Keys.Add(key);
         }
     }
 }

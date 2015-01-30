@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace MadMilkman.Ini.Tests
 {
-    [TestClass]
+    [TestFixture, Category("Writing INI files")]
     public class IniFileWriteTests
     {
-        [TestMethod]
+        [Test]
         public void WriteDefaultTest()
         {
             IniOptions options = new IniOptions();
@@ -33,7 +33,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Key=Value;Leading comment", lines[3]);
         }
 
-        [TestMethod]
+        [Test]
         public void WriteCustomTest()
         {
             IniOptions options = new IniOptions()
@@ -53,7 +53,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Key : Value", lines[1]);
         }
 
-        [TestMethod]
+        [Test]
         public void WriteGlobalSectionTest()
         {
             IniOptions options = new IniOptions();
@@ -69,7 +69,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Key2=Value2", lines[1]);
         }
 
-        [TestMethod]
+        [Test]
         public void WriteUTF8EncodingTest()
         {
             IniOptions options = new IniOptions() { Encoding = Encoding.UTF8 };
@@ -83,7 +83,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("[こんにちは 世界]", lines[1]);
         }
 
-        [TestMethod]
+        [Test]
         public void WriteEmptyLinesTest()
         {
             IniOptions options = new IniOptions() { Encoding = Encoding.UTF8 };
@@ -102,19 +102,19 @@ namespace MadMilkman.Ini.Tests
                 });
 
             string[] lines = SaveIniFileContent(file, options);
-            Assert.AreEqual(string.Empty, lines[0]);
-            Assert.AreEqual(string.Empty, lines[1]);
+            Assert.IsEmpty(lines[0]);
+            Assert.IsEmpty(lines[1]);
             Assert.AreEqual(";", lines[2]);
-            Assert.AreEqual(string.Empty, lines[3]);
+            Assert.IsEmpty(lines[3]);
             Assert.AreEqual("[Section];", lines[4]);
-            Assert.AreEqual(string.Empty, lines[5]);
-            Assert.AreEqual(string.Empty, lines[6]);
+            Assert.IsEmpty(lines[5]);
+            Assert.IsEmpty(lines[6]);
             Assert.AreEqual(";", lines[7]);
-            Assert.AreEqual(string.Empty, lines[8]);
+            Assert.IsEmpty(lines[8]);
             Assert.AreEqual("Key=;", lines[9]);
         }
 
-        [TestMethod]
+        [Test]
         public void WriteLeftIndentionTest()
         {
             IniOptions options = new IniOptions() { Encoding = Encoding.UTF8 };

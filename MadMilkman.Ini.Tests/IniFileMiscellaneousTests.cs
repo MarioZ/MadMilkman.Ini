@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace MadMilkman.Ini.Tests
 {
-    [TestClass]
+    [TestFixture, Category("Parsing IniKey values")]
     public class IniFileMiscellaneousTests
     {
-        [TestMethod]
+        [Test]
         public void ParseValueTest()
         {
             var dateTime = new DateTime(9999, 12, 31, 23, 59, 59);
@@ -85,7 +85,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual(DayOfWeek.Sunday, resultingEnum);
         }
 
-        [TestMethod]
+        [Test]
         public void ParseValueArrayTest()
         {
             var file = new IniFile();
@@ -124,7 +124,7 @@ namespace MadMilkman.Ini.Tests
             }
         }
 
-        [TestMethod]
+        [Test]
         public void ParseValueMappingsTest()
         {
             var file = new IniFile();

@@ -1,5 +1,6 @@
 # ![MadMilkman.Ini component's icon](../master/MadMilkman.Ini/Properties/MadMilkman.Ini.png) MadMilkman.Ini
 **MadMilkman.Ini** is a .NET component which simplifies processing of INI files and requires only a minimum **.NET Framework version 2.0**.
+It is 100% managed code (C#), **compatible with Mono framework**, which provides an easy to use programming interface.
 
 ## Advantages:
 * Enables reading and writing of various INI file formats.
@@ -60,13 +61,13 @@ Console.WriteLine(file.Sections("Section Name").Keys("Key Name").Value)
 ### [C++] Hello World
 ```cpp
 // Create new file.
-IniFile ^file = gcnew IniFile();
+IniFile^ file = gcnew IniFile();
 
 // Add new section.
-IniSection ^section = file->Sections->Add("Section Name");
+IniSection^ section = file->Sections->Add("Section Name");
 
 // Add new key and its value.
-IniKey ^key = section->Keys->Add("Key Name", "Hello World");
+IniKey^ key = section->Keys->Add("Key Name", "Hello World");
 
 // Read file's specific value.
 Console::WriteLine(file->Sections["Section Name"]->Keys["Key Name"]->Value);

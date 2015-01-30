@@ -1,14 +1,14 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace MadMilkman.Ini.Tests
 {
-    [TestClass]
+    [TestFixture, Category("Reading INI files")]
     public class IniFileReadTests
     {
-        [TestMethod]
+        [Test]
         public void ReadDefaultTest()
         {
             string iniFileContent = ";Section's trailing comment." + Environment.NewLine +
@@ -30,7 +30,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Key's leading comment.", file.Sections[0].Keys[0].LeadingComment.Text);
         }
 
-        [TestMethod]
+        [Test]
         public void ReadCustomTest()
         {
             string iniFileContent = "#Section's trailing comment." + Environment.NewLine +
@@ -58,7 +58,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Key's leading comment.", file.Sections[0].Keys[0].LeadingComment.Text);
         }
 
-        [TestMethod]
+        [Test]
         public void ReadGlobalSectionTest()
         {
             string iniFileContent = ";Trailing comment1" + Environment.NewLine +
@@ -80,7 +80,56 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("Value2", file.Sections[0].Keys[1].Value);
         }
 
-        [TestMethod]
+        [Test]
+        public void ReadMultipleGlobalSectionsTest()
+        {
+            string inputContent = "Key = Value" + Environment.NewLine +
+                                  "[Section]" + Environment.NewLine +
+                                  "Key = Value";
+            IniFile file = new IniFile();
+
+            using (var stream = new MemoryStream(Encoding.ASCII.GetBytes(inputContent)))
+            {
+                file.Load(stream);
+                file.Load(stream);
+                file.Load(stream);
+            }
+
+            Assert.AreEqual(6, file.Sections.Count);
+            Assert.AreEqual(IniSection.GlobalSectionName, file.Sections[0].Name);
+            Assert.AreEqual(IniSection.GlobalSectionName, file.Sections[2].Name);
+            Assert.AreEqual(IniSection.GlobalSectionName, file.Sections[4].Name);
+            Assert.AreEqual("Section", file.Sections[1].Name);
+            Assert.AreEqual("Section", file.Sections[3].Name);
+            Assert.AreEqual("Section", file.Sections[5].Name);
+
+            foreach (var section in file.Sections)
+                Assert.AreEqual(1, section.Keys.Count);
+
+            string outputContent;
+            using (var stream = new MemoryStream())
+            {
+                file.Save(stream);
+                outputContent = new StreamReader(stream, Encoding.ASCII).ReadToEnd();
+            }
+
+            file.Sections.Clear();
+            using (var stream = new MemoryStream(Encoding.ASCII.GetBytes(outputContent)))
+                file.Load(stream);
+
+            Assert.AreEqual(6, file.Sections.Count);
+            Assert.AreEqual(IniSection.GlobalSectionName, file.Sections[0].Name);
+            Assert.AreEqual(IniSection.GlobalSectionName, file.Sections[2].Name);
+            Assert.AreEqual(IniSection.GlobalSectionName, file.Sections[4].Name);
+            Assert.AreEqual("Section", file.Sections[1].Name);
+            Assert.AreEqual("Section", file.Sections[3].Name);
+            Assert.AreEqual("Section", file.Sections[5].Name);
+
+            foreach (var section in file.Sections)
+                Assert.AreEqual(1, section.Keys.Count);
+        }
+
+        [Test]
         public void ReadUTF8EncodingTest()
         {
             string iniFileContent = "[Καλημέρα κόσμε]" + Environment.NewLine +
@@ -93,7 +142,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("¥ £ € $ ¢ ₡ ₢ ₣ ₤ ₥ ₦ ₧ ₨ ₩ ₪ ₫ ₭ ₮ ₯ ₹", file.Sections[0].Keys[0].Value);
         }
 
-        [TestMethod]
+        [Test]
         public void ReadEmptyLinesTest()
         {
             string iniFileContent = Environment.NewLine +
@@ -121,7 +170,7 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual(3, file.Sections[1].Keys[0].TrailingComment.EmptyLinesBefore);
         }
 
-        [TestMethod]
+        [Test]
         public void ReadCommentEdgeCasesTest()
         {
             string iniFileContent = ";" + Environment.NewLine +
@@ -139,35 +188,35 @@ namespace MadMilkman.Ini.Tests
 
             Assert.AreEqual(Environment.NewLine + "Section's trailing comment;", file.Sections[0].TrailingComment.Text);
             Assert.AreEqual("Section", file.Sections[0].Name);
-            Assert.AreEqual(null, file.Sections[0].LeadingComment.Text);
+            Assert.IsNull(file.Sections[0].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].LeadingComment.LeftIndentation);
 
             Assert.AreEqual("Section", file.Sections[1].Name);
-            Assert.AreEqual(string.Empty, file.Sections[1].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[1].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[1].LeadingComment.LeftIndentation);
 
             Assert.AreEqual("Section", file.Sections[2].Name);
-            Assert.AreEqual(string.Empty, file.Sections[2].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[2].LeadingComment.Text);
             Assert.AreEqual(2, file.Sections[2].LeadingComment.LeftIndentation);
 
             Assert.AreEqual(Environment.NewLine + "Key's trailing comment;", file.Sections[2].Keys[0].TrailingComment.Text);
             Assert.AreEqual("Key", file.Sections[2].Keys[0].Name);
             Assert.AreEqual("Value", file.Sections[2].Keys[0].Value);
-            Assert.AreEqual(null, file.Sections[2].Keys[0].LeadingComment.Text);
+            Assert.IsNull(file.Sections[2].Keys[0].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[2].Keys[0].LeadingComment.LeftIndentation);
 
             Assert.AreEqual("Key", file.Sections[2].Keys[1].Name);
             Assert.AreEqual("Value", file.Sections[2].Keys[1].Value);
-            Assert.AreEqual(string.Empty, file.Sections[2].Keys[1].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[2].Keys[1].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[2].Keys[1].LeadingComment.LeftIndentation);
 
             Assert.AreEqual("Key", file.Sections[2].Keys[2].Name);
             Assert.AreEqual("Value", file.Sections[2].Keys[2].Value);
-            Assert.AreEqual(string.Empty, file.Sections[2].Keys[2].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[2].Keys[2].LeadingComment.Text);
             Assert.AreEqual(2, file.Sections[2].Keys[2].LeadingComment.LeftIndentation);
         }
 
-        [TestMethod]
+        [Test]
         public void ReadValueEdgeCasesTest()
         {
             string iniFileContent = "[Section]" + Environment.NewLine +
@@ -182,29 +231,29 @@ namespace MadMilkman.Ini.Tests
 
             IniFile file = LoadIniFileContent(iniFileContent, new IniOptions());
 
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[0].Value);
-            Assert.AreEqual(null, file.Sections[0].Keys[0].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[0].Keys[0].Value);
+            Assert.IsNull(file.Sections[0].Keys[0].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[0].LeadingComment.LeftIndentation);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[1].Value);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[1].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[0].Keys[1].Value);
+            Assert.IsEmpty(file.Sections[0].Keys[1].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[1].LeadingComment.LeftIndentation);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[2].Value);
-            Assert.AreEqual(null, file.Sections[0].Keys[2].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[0].Keys[2].Value);
+            Assert.IsNull(file.Sections[0].Keys[2].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[2].LeadingComment.LeftIndentation);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[3].Value);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[3].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[0].Keys[3].Value);
+            Assert.IsEmpty(file.Sections[0].Keys[3].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[3].LeadingComment.LeftIndentation);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[4].Value);
-            Assert.AreEqual(null, file.Sections[0].Keys[4].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[0].Keys[4].Value);
+            Assert.IsNull(file.Sections[0].Keys[4].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[4].LeadingComment.LeftIndentation);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[5].Value);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[5].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[0].Keys[5].Value);
+            Assert.IsEmpty(file.Sections[0].Keys[5].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[5].LeadingComment.LeftIndentation);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[6].Value);
-            Assert.AreEqual(null, file.Sections[0].Keys[6].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[0].Keys[6].Value);
+            Assert.IsNull(file.Sections[0].Keys[6].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[6].LeadingComment.LeftIndentation);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[7].Value);
-            Assert.AreEqual(string.Empty, file.Sections[0].Keys[7].LeadingComment.Text);
+            Assert.IsEmpty(file.Sections[0].Keys[7].Value);
+            Assert.IsEmpty(file.Sections[0].Keys[7].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[7].LeadingComment.LeftIndentation);
         }
 
