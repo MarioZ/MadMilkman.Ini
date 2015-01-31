@@ -21,10 +21,15 @@ namespace MadMilkman.Ini
         private readonly IList<T> items;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IniFile parentFile;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly IniItem owner;
 
         /// <exclude/>
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        protected IniFile ParentFile { get { return parentFile; } }
+        protected IniFile ParentFile { get { return this.parentFile; } }
+
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        internal IniItem Owner { get { return this.owner; } }
 
         /// 
         /// <summary>
@@ -32,11 +37,12 @@ namespace MadMilkman.Ini
         /// </summary>
         public int Count { get { return this.items.Count; } }
 
-        internal IniItemCollection(IniFile parentFile, IniDuplication duplication, bool caseSensitive)
+        internal IniItemCollection(IniFile parentFile, IniItem owner, IniDuplication duplication, bool caseSensitive)
         {
             this.caseSensitive = caseSensitive;
             this.duplication = duplication;
             this.parentFile = parentFile;
+            this.owner = owner;
             this.items = new List<T>();
         }
 

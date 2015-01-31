@@ -20,6 +20,11 @@ namespace MadMilkman.Ini
         public IniKeyCollection ParentCollection { get { return (IniKeyCollection)this.ParentCollectionCore; } }
 
         /// <summary>
+        /// Gets the <see cref="IniSection"/> to which this <see cref="IniKey"/> belongs to.
+        /// </summary>
+        public IniSection ParentSection { get { return (IniSection)((this.ParentCollectionCore != null) ? this.ParentCollection.Owner : null); } }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="IniKey"/> class.
         /// </summary>
         /// <param name="parentFile">The owner file.</param>

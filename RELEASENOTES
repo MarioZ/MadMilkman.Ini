@@ -1,3 +1,4 @@
+[1.0.2.2]  Added support for IniKey.ParentSection property.
 [1.0.2.1]  Switched from MS tests to NUnit tests.
 
 [1.0.2.0]  NEW RELEASE

@@ -180,7 +180,36 @@ namespace MadMilkman.Ini.Tests
             Assert.IsTrue(file.Sections["DOUBLES"].Keys[1].TryParseValue(out doubleResult));
             Assert.AreEqual(double.NegativeInfinity, doubleResult);
             Assert.IsTrue(file.Sections["DOUBLES"].Keys[2].TryParseValue(out doubleResult));
-            Assert.AreEqual(double.NaN, doubleResult);
+            Assert.IsNaN(doubleResult);
+        }
+
+        [Test]
+        public void IniItemParentsTest()
+        {
+            var file = new IniFile();
+            var section = new IniSection(file, "Section");
+            var key = new IniKey(file, "Key");
+
+            Assert.AreSame(file, section.ParentFile);
+            Assert.AreSame(file, key.ParentFile);
+
+            Assert.IsNull(section.ParentCollection);
+            Assert.IsNull(key.ParentCollection);
+            Assert.IsNull(key.ParentSection);
+
+            section.Keys.Add(key);
+            Assert.AreSame(section.Keys, key.ParentCollection);
+            Assert.AreSame(section, key.ParentSection);
+
+            file.Sections.Add(section);
+            Assert.AreSame(file.Sections, section.ParentCollection);
+
+            file.Sections.Remove(section);
+            Assert.IsNull(section.ParentCollection);
+
+            section.Keys.Remove(key);
+            Assert.IsNull(key.ParentCollection);
+            Assert.IsNull(key.ParentSection);
         }
     }
 }

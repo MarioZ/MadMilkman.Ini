@@ -8,8 +8,8 @@ namespace MadMilkman.Ini
     /// <seealso cref="IniKey"/>
     public sealed class IniKeyCollection : IniItemCollection<IniKey>
     {
-        internal IniKeyCollection(IniFile parentFile, IniDuplication duplication, bool caseSensitive)
-            : base(parentFile, duplication, caseSensitive) { }
+        internal IniKeyCollection(IniFile parentFile, IniSection parentSection, IniDuplication duplication, bool caseSensitive)
+            : base(parentFile, parentSection, duplication, caseSensitive) { }
 
         /// <summary>
         /// Adds an item to the end of this collection.

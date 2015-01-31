@@ -9,7 +9,7 @@ namespace MadMilkman.Ini
     public sealed class IniSectionCollection : IniItemCollection<IniSection>
     {
         internal IniSectionCollection(IniFile parentFile, IniDuplication duplication, bool caseSensitive)
-            : base(parentFile, duplication, caseSensitive) { }
+            : base(parentFile, null, duplication, caseSensitive) { }
 
         /// <summary>
         /// Adds an item to the end of this collection.

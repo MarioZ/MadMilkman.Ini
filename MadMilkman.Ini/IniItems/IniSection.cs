@@ -67,7 +67,7 @@ namespace MadMilkman.Ini
         public IniSection(IniFile parentFile, string name, IEnumerable<IniKey> keys)
             : base(parentFile, name)
         {
-            this.keys = new IniKeyCollection(parentFile, parentFile.options.KeyDuplicate, parentFile.options.KeyNameCaseSensitive);
+            this.keys = new IniKeyCollection(parentFile, this, parentFile.options.KeyDuplicate, parentFile.options.KeyNameCaseSensitive);
 
             if (keys != null)
                 foreach (IniKey key in keys)
@@ -78,14 +78,14 @@ namespace MadMilkman.Ini
         internal IniSection(IniFile parentFile, string name, IniComment trailingComment)
             : base(parentFile, name, trailingComment)
         {
-            this.keys = new IniKeyCollection(parentFile, parentFile.options.KeyDuplicate, parentFile.options.KeyNameCaseSensitive);
+            this.keys = new IniKeyCollection(parentFile, this, parentFile.options.KeyDuplicate, parentFile.options.KeyNameCaseSensitive);
         }
 
         // Deep copy constructor.
         internal IniSection(IniFile destinationFile, IniSection sourceSection)
             : base(destinationFile, sourceSection)
         {
-            this.keys = new IniKeyCollection(destinationFile, destinationFile.options.KeyDuplicate, destinationFile.options.KeyNameCaseSensitive);
+            this.keys = new IniKeyCollection(destinationFile, this, destinationFile.options.KeyDuplicate, destinationFile.options.KeyNameCaseSensitive);
 
             foreach (var key in sourceSection.keys)
                 this.keys.Add(key.Copy(destinationFile));
