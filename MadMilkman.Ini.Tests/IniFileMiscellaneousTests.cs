@@ -4,9 +4,38 @@ using NUnit.Framework;
 
 namespace MadMilkman.Ini.Tests
 {
-    [TestFixture, Category("Parsing IniKey values")]
+    [TestFixture, Category("Manipulating IniFile's content")]
     public class IniFileMiscellaneousTests
     {
+        [Test]
+        public void IniItemParentsTest()
+        {
+            var file = new IniFile();
+            var section = new IniSection(file, "Section");
+            var key = new IniKey(file, "Key");
+
+            Assert.AreSame(file, section.ParentFile);
+            Assert.AreSame(file, key.ParentFile);
+
+            Assert.IsNull(section.ParentCollection);
+            Assert.IsNull(key.ParentCollection);
+            Assert.IsNull(key.ParentSection);
+
+            section.Keys.Add(key);
+            Assert.AreSame(section.Keys, key.ParentCollection);
+            Assert.AreSame(section, key.ParentSection);
+
+            file.Sections.Add(section);
+            Assert.AreSame(file.Sections, section.ParentCollection);
+
+            file.Sections.Remove(section);
+            Assert.IsNull(section.ParentCollection);
+
+            section.Keys.Remove(key);
+            Assert.IsNull(key.ParentCollection);
+            Assert.IsNull(key.ParentSection);
+        }
+
         [Test]
         public void ParseValueTest()
         {
@@ -184,32 +213,60 @@ namespace MadMilkman.Ini.Tests
         }
 
         [Test]
-        public void IniItemParentsTest()
+        public void BindValueWithInternalDataTest()
         {
-            var file = new IniFile();
-            var section = new IniSection(file, "Section");
-            var key = new IniKey(file, "Key");
+            string iniFileContent = "[Source Section]\n" +
+                                    "Source Key 1 = Source Value 1\n" +
+                                    "Source Key 2 = Source Value 2\n" +
+                                    "Source Key 3 = Source Value 3\n" +
 
-            Assert.AreSame(file, section.ParentFile);
-            Assert.AreSame(file, key.ParentFile);
+                                    "[Binding Section]\n" +
+                                    "Source Key 4 = Source Value 4\n" +
+                                    "Test Key 1 = @{Source Section|Source Key 1}\n" +
+                                    "Test Key 2-3 = @{Source Section|Source Key 2} and @{Source Section|Source Key 3}\n" +
+                                    "Test Key 1-4 = @{Source Section|Source Key 1} and @{Source Key 4}\n" +
+                                    "Test Key X = @{Unknown}";
+            
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
+            file.ValueBinding.Bind();
 
-            Assert.IsNull(section.ParentCollection);
-            Assert.IsNull(key.ParentCollection);
-            Assert.IsNull(key.ParentSection);
+            var bindedSection = file.Sections["Binding Section"];
+            Assert.AreEqual("Source Value 1", bindedSection.Keys["Test Key 1"].Value);
+            Assert.AreEqual("Source Value 2 and Source Value 3", bindedSection.Keys["Test Key 2-3"].Value);
+            Assert.AreEqual("Source Value 1 and Source Value 4", bindedSection.Keys["Test Key 1-4"].Value);
+            Assert.AreEqual("@{Unknown}", bindedSection.Keys["Test Key X"].Value);
+        }
 
-            section.Keys.Add(key);
-            Assert.AreSame(section.Keys, key.ParentCollection);
-            Assert.AreSame(section, key.ParentSection);
+        [Test]
+        public void BindValueWithExternalDataTest()
+        {
+            string iniFileContent = "[Binding Section]\n" +
+                                    "Test Key 1 = @{First Tester}\n" +
+                                    "Test Key 2-3 = @{Second Tester} and @{Third Tester}\n" +
+                                    "Test Key 3-3-4 = {@{Third Tester}, @{Third Tester}, @{Fourth Tester}}\n" +
+                                    "Test Key X = @{Unknown}\n" +
+                                    "Test Key Nested = @{Nested @{Test}}";
 
-            file.Sections.Add(section);
-            Assert.AreSame(file.Sections, section.ParentCollection);
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
+            file.ValueBinding.Bind(
+                new Dictionary<string, string>()
+                {
+                    {"First Tester", "Source Value 1"},
+                    {"Second Tester", "Source Value 2"},
+                    {"Third Tester", "Source Value 3"},
+                    {"Fourth Tester", "Source Value 4"},
+                    {"Test", "Tester"}
+                });
 
-            file.Sections.Remove(section);
-            Assert.IsNull(section.ParentCollection);
+            var bindedSection = file.Sections["Binding Section"];
+            Assert.AreEqual("Source Value 1", bindedSection.Keys["Test Key 1"].Value);
+            Assert.AreEqual("Source Value 2 and Source Value 3", bindedSection.Keys["Test Key 2-3"].Value);
+            Assert.AreEqual("{Source Value 3, Source Value 3, Source Value 4}", bindedSection.Keys["Test Key 3-3-4"].Value);
+            Assert.AreEqual("@{Unknown}", bindedSection.Keys["Test Key X"].Value);
+            Assert.AreEqual("@{Nested Tester}", bindedSection.Keys["Test Key Nested"].Value);
 
-            section.Keys.Remove(key);
-            Assert.IsNull(key.ParentCollection);
-            Assert.IsNull(key.ParentSection);
+            file.ValueBinding.Bind(new KeyValuePair<string, string>("Nested Tester", "Nested Source Value"));
+            Assert.AreEqual("Nested Source Value", bindedSection.Keys["Test Key Nested"].Value);
         }
     }
 }

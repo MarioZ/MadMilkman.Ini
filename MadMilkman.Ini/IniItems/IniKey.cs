@@ -58,6 +58,7 @@ namespace MadMilkman.Ini
         /// Copies this <see cref="IniKey"/> instance.
         /// </summary>
         /// <returns>Copied <see cref="IniKey"/>.</returns>
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#copying" target="_self">IniItem's Copying</seealso>
         public IniKey Copy() { return this.Copy(this.ParentFile); }
 
         /// <summary>
@@ -65,6 +66,7 @@ namespace MadMilkman.Ini
         /// </summary>
         /// <param name="destinationFile">Copied key's parent file.</param>
         /// <returns>Copied <see cref="IniKey"/> that belongs to a specified <see cref="IniFile"/>.</returns>
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#copying" target="_self">IniItem's Copying</seealso>
         public IniKey Copy(IniFile destinationFile) { return new IniKey(destinationFile, this); }
 
         /// <summary>

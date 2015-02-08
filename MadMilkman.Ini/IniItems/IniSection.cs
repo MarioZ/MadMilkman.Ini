@@ -95,6 +95,7 @@ namespace MadMilkman.Ini
         /// Copies this <see cref="IniSection"/> instance.
         /// </summary>
         /// <returns>Copied <see cref="IniSection"/>.</returns>
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#copying" target="_self">IniItem's Copying</seealso>
         public IniSection Copy() { return this.Copy(this.ParentFile); }
 
         /// <summary>
@@ -102,6 +103,7 @@ namespace MadMilkman.Ini
         /// </summary>
         /// <param name="destinationFile">Copied section's parent file.</param>
         /// <returns>Copied <see cref="IniSection"/> that belongs to a specified <see cref="IniFile"/>.</returns>
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#copying" target="_self">IniItem's Copying</seealso>
         public IniSection Copy(IniFile destinationFile) { return new IniSection(destinationFile, this); }
 
         private static IEnumerable<IniKey> GetIniKeysFromKeyValuePairs(IniFile parentFile, IEnumerable<KeyValuePair<string, string>> nameValuePairs)

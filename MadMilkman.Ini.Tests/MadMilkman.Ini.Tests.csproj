@@ -52,6 +52,7 @@
     <Compile Include="IniFileCreateUpdateTests.cs" />
     <Compile Include="IniFileMiscellaneousTests.cs" />
     <Compile Include="IniFileWriteTests.cs" />
+    <Compile Include="IniUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="IniFileReadTests.cs" />
   </ItemGroup>

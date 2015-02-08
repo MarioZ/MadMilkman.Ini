@@ -269,7 +269,7 @@ namespace MadMilkman.Ini.Tests
             var options = new IniOptions()
             {
                 SectionDuplicate = IniDuplication.Disallowed
-                };
+            };
 
             var file = new IniFile(options);
             file.Sections.Add("SECTION1").Keys.Add("KEY1");

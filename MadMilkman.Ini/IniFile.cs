@@ -12,7 +12,9 @@ namespace MadMilkman.Ini
     /// <para>To define an INI file's format use <see cref="IniOptions"/> object.</para>
     /// <para>To load (read) an INI file from a file's path or a stream use <see cref="O:MadMilkman.Ini.IniFile.Load">IniFile.Load</see> methods.</para>
     /// <para>To save (write) an INI file to a file's path or a stream use <see cref="O:MadMilkman.Ini.IniFile.Save">IniFile.Save</see> methods.</para>
+    /// <para>To view INI file's structure representation see <see href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#diagram" target="_self">IniFile's Content Hierarchy Diagram</see>.</para>
     /// </remarks>
+    /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm" target="_self">Overview</seealso>
     /// <seealso href="http://en.wikipedia.org/wiki/INI_file">INI file format on Wikipedia.</seealso>
     public sealed class IniFile
     {
@@ -21,6 +23,8 @@ namespace MadMilkman.Ini
         private readonly IniSectionCollection sections;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private IniValueMappings valueMappings;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private IniValueBinding valueBinding;
 
         /// <summary>
         /// Initializes a new instance of <see cref="IniFile"/> class.
@@ -48,7 +52,6 @@ namespace MadMilkman.Ini
         /// <summary>
         /// Gets the mappings of <see cref="IniKey.Value"/>s and their results, used in <see cref="O:MadMilkman.Ini.IniKey.TryParseValue"/> methods.
         /// </summary>
-        /// <remarks>Mapped value results have priority over parsing the value.</remarks>
         public IniValueMappings ValueMappings
         {
             get
@@ -61,6 +64,19 @@ namespace MadMilkman.Ini
 
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         internal bool HasValueMappings { get { return this.valueMappings != null; } }
+
+        /// <summary>
+        /// Gets the object that exposes binding operations, which are executed with <see cref="O:MadMilkman.Ini.IniValueBinding.Bind"/> methods.
+        /// </summary>
+        public IniValueBinding ValueBinding
+        {
+            get
+            {
+                if (this.valueBinding == null)
+                    this.valueBinding = new IniValueBinding(this);
+                return this.valueBinding;
+            }
+        }
 
         /// <summary>
         /// Loads a file from a path.

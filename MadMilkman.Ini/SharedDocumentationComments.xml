@@ -15,5 +15,6 @@
       <para>For supported types see the remarks of <see cref="IsSupportedValueType(Type)"/> method.</para>
       <para>Mapped value results in <see cref="IniFile.ValueMappings"/> have priority over parsing the value.</para>
     </remarks>
+    <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniFile's Value Parsing</seealso>
   </Comment>
 </Comments>

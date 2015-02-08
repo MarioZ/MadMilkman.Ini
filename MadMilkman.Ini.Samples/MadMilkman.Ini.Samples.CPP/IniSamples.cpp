@@ -195,9 +195,9 @@ void Parse()
 	try	{ file->Load(contentStream);	}
 	finally	{ delete contentStream;	}
 
-	// Map "yes" value as "true" boolean.
+	// Map 'yes' value as 'true' boolean.
 	file->ValueMappings->Add("yes", true);
-	// Map "no" value as "false" boolean.
+	// Map 'no' value as 'false' boolean.
 	file->ValueMappings->Add("no", false);
 
 	IniSection^ playerSection = file->Sections["Player"];
@@ -223,6 +223,59 @@ void Parse()
 	playerSection->Keys["Game Time"]->TryParseValue(playerGameTime);
 }
 
+void BindInternal()
+{
+	IniFile^ file = gcnew IniFile();
+	String^ content = "[Machine Settings]" + Environment::NewLine +
+					  "Program Files = C:\\Program Files" + Environment::NewLine +
+					  "[Application Settings]" + Environment::NewLine +
+					  "Name = Example App" + Environment::NewLine +
+					  "Version = 1.0" + Environment::NewLine +
+					  "Full Name = @{Name} v@{Version}" + Environment::NewLine +
+					  "Executable Path = @{Machine Settings|Program Files}\\@{Name}.exe";
+	Stream^ stream = gcnew MemoryStream(Encoding::ASCII->GetBytes(content));
+	try { file->Load(stream); }
+	finally { delete stream; }
+
+	// Bind placeholders with file's content, internal information.
+	file->ValueBinding->Bind();
+
+	// Retrieve application's full name, value is "Example App v1.0".
+	String^ appFullName = file->Sections["Application Settings"]->Keys["Full Name"]->Value;
+
+	// Retrieve application's executable path, value is "C:\\Program Files\\Example App.exe".
+	String^ appExePath = file->Sections["Application Settings"]->Keys["Executable Path"]->Value;
+}
+
+void BindExternal()
+{
+	IniFile^ file = gcnew IniFile();
+	String^ content = "[User's Settings]" + Environment::NewLine +
+					  "Nickname = @{User Alias}" + Environment::NewLine +
+					  "Full Name = @{User Name} @{User Surname}" + Environment::NewLine +
+					  "Profile Page = @{Homepage}/Profiles/@{User Alias}";
+	Stream^ stream = gcnew MemoryStream(Encoding::ASCII->GetBytes(content));
+	try { file->Load(stream); }
+	finally { delete stream; }
+
+	// Bind placeholders with user's data, external information.
+	Dictionary<String^, String^>^ userData = gcnew Dictionary<String^, String^>();
+	userData->Add("User Alias", "Johny");
+	userData->Add("User Name", "John");
+	userData->Add("User Surname", "Doe");
+	file->ValueBinding->Bind(userData);
+
+	// Bind 'Homepage' placeholder with 'www.example.com' value.
+	file->ValueBinding->Bind(
+		KeyValuePair<String^, String^>("Homepage", "www.example.com"));
+
+	// Retrieve user's full name, value is "John Doe".
+	String^ userFullName = file->Sections["User's Settings"]->Keys["Full Name"]->Value;
+
+	// Retrieve user's profile page, value is "www.example.com/Profiles/Johny".
+	String^ userProfilePage = file->Sections["User's Settings"]->Keys["Profile Page"]->Value;
+}
+
 void main()
 {
 	HelloWorld();
@@ -240,4 +293,8 @@ void main()
 	Copy();
 
 	Parse();
+
+	BindInternal();
+
+	BindExternal();
 }

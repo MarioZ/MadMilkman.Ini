@@ -186,17 +186,17 @@ namespace MadMilkman.Ini.Samples.CS
         {
             IniFile file = new IniFile();
             string content = "[Player]" + Environment.NewLine +
-                              "Full Name = John Doe" + Environment.NewLine +
-                              "Birthday = 12/31/1999" + Environment.NewLine +
-                              "Married = Yes" + Environment.NewLine +
-                              "Score = 9999999" + Environment.NewLine +
-                              "Game Time = 00:59:59";
+                             "Full Name = John Doe" + Environment.NewLine +
+                             "Birthday = 12/31/1999" + Environment.NewLine +
+                             "Married = Yes" + Environment.NewLine +
+                             "Score = 9999999" + Environment.NewLine +
+                             "Game Time = 00:59:59";
             using (Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(content)))
                 file.Load(stream);
 
-            // Map "yes" value as "true" boolean.
+            // Map 'yes' value as 'true' boolean.
             file.ValueMappings.Add("yes", true);
-            // Map "no" value as "false" boolean.
+            // Map 'no' value as 'false' boolean.
             file.ValueMappings.Add("no", false);
 
             IniSection playerSection = file.Sections["Player"];
@@ -222,6 +222,59 @@ namespace MadMilkman.Ini.Samples.CS
             playerSection.Keys["Game Time"].TryParseValue(out playerGameTime);
         }
 
+        private static void BindInternal()
+        {
+            IniFile file = new IniFile();
+            string content = "[Machine Settings]" + Environment.NewLine +
+                             "Program Files = C:\\Program Files" + Environment.NewLine +
+                             "[Application Settings]" + Environment.NewLine +
+                             "Name = Example App" + Environment.NewLine +
+                             "Version = 1.0" + Environment.NewLine +
+                             "Full Name = @{Name} v@{Version}" + Environment.NewLine +
+                             "Executable Path = @{Machine Settings|Program Files}\\@{Name}.exe";
+            using (Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(content)))
+                file.Load(stream);
+
+            // Bind placeholders with file's content, internal information.
+            file.ValueBinding.Bind();
+
+            // Retrieve application's full name, value is "Example App v1.0".
+            string appFullName = file.Sections["Application Settings"].Keys["Full Name"].Value;
+
+            // Retrieve application's executable path, value is "C:\\Program Files\\Example App.exe".
+            string appExePath = file.Sections["Application Settings"].Keys["Executable Path"].Value;
+        }
+
+        private static void BindExternal()
+        {
+            IniFile file = new IniFile();
+            string content = "[User's Settings]" + Environment.NewLine +
+                             "Nickname = @{User Alias}" + Environment.NewLine +
+                             "Full Name = @{User Name} @{User Surname}" + Environment.NewLine +
+                             "Profile Page = @{Homepage}/Profiles/@{User Alias}";
+            using (Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(content)))
+                file.Load(stream);
+
+            // Bind placeholders with user's data, external information.
+            file.ValueBinding.Bind(
+                new Dictionary<string, string>
+                {
+                    {"User Alias", "Johny"},
+                    {"User Name", "John"},
+                    {"User Surname", "Doe"}
+                });
+
+            // Bind 'Homepage' placeholder with 'www.example.com' value.
+            file.ValueBinding.Bind(
+                new KeyValuePair<string, string>("Homepage", "www.example.com"));
+
+            // Retrieve user's full name, value is "John Doe".
+            string userFullName = file.Sections["User's Settings"].Keys["Full Name"].Value;
+
+            // Retrieve user's profile page, value is "www.example.com/Profiles/Johny".
+            string userProfilePage = file.Sections["User's Settings"].Keys["Profile Page"].Value;
+        }
+
         static void Main()
         {
             HelloWorld();
@@ -239,6 +292,10 @@ namespace MadMilkman.Ini.Samples.CS
             Copy();
 
             Parse();
+
+            BindInternal();
+
+            BindExternal();
         }
     }
 }

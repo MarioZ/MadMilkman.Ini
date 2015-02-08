@@ -63,8 +63,9 @@
     <Compile Include="IniItemsCollection\IniSectionCollection.cs" />
     <Compile Include="IniReaderWriter\IniReader.cs" />
     <Compile Include="IniReaderWriter\IniWriter.cs" />
-    <Compile Include="IniValueConverters\IniValueMappings.cs" />
-    <Compile Include="IniValueConverters\IniValueParser.cs" />
+    <Compile Include="IniValueUtilities\IniValueBinding.cs" />
+    <Compile Include="IniValueUtilities\IniValueMappings.cs" />
+    <Compile Include="IniValueUtilities\IniValueParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -16,7 +16,7 @@ namespace MadMilkman.Ini.Tests
                                     ";Key's trailing comment." + Environment.NewLine +
                                     "Key's name = Key's value;Key's leading comment.";
 
-            IniFile file = LoadIniFileContent(iniFileContent, new IniOptions());
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
 
             Assert.AreEqual(1, file.Sections.Count);
             Assert.AreEqual("Section's trailing comment.", file.Sections[0].TrailingComment.Text);
@@ -44,7 +44,7 @@ namespace MadMilkman.Ini.Tests
                 SectionWrapper = IniSectionWrapper.CurlyBrackets,
                 KeyDelimiter = IniKeyDelimiter.Colon
             };
-            IniFile file = LoadIniFileContent(iniFileContent, options);
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, options);
 
             Assert.AreEqual(1, file.Sections.Count);
             Assert.AreEqual("Section's trailing comment.", file.Sections[0].TrailingComment.Text);
@@ -66,7 +66,7 @@ namespace MadMilkman.Ini.Tests
                                     ";Trailing comment2" + Environment.NewLine +
                                     "Key2 = Value2";
 
-            IniFile file = LoadIniFileContent(iniFileContent, new IniOptions());
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
 
             Assert.AreEqual(1, file.Sections.Count);
             Assert.AreEqual(IniSection.GlobalSectionName, file.Sections[0].Name);
@@ -135,7 +135,7 @@ namespace MadMilkman.Ini.Tests
             string iniFileContent = "[Καλημέρα κόσμε]" + Environment.NewLine +
                                     "こんにちは 世界 = ¥ £ € $ ¢ ₡ ₢ ₣ ₤ ₥ ₦ ₧ ₨ ₩ ₪ ₫ ₭ ₮ ₯ ₹";
 
-            IniFile file = LoadIniFileContent(iniFileContent, new IniOptions() { Encoding = Encoding.UTF8 });
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions() { Encoding = Encoding.UTF8 });
 
             Assert.AreEqual("Καλημέρα κόσμε", file.Sections[0].Name);
             Assert.AreEqual("こんにちは 世界", file.Sections[0].Keys[0].Name);
@@ -162,7 +162,7 @@ namespace MadMilkman.Ini.Tests
                                     ";" + Environment.NewLine +
                                     "Key = Value";
 
-            IniFile file = LoadIniFileContent(iniFileContent, new IniOptions());
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
 
             Assert.AreEqual(2, file.Sections[0].LeadingComment.EmptyLinesBefore);
             Assert.AreEqual(3, file.Sections[0].Keys[0].LeadingComment.EmptyLinesBefore);
@@ -184,7 +184,7 @@ namespace MadMilkman.Ini.Tests
                                     "Key = Value;" + Environment.NewLine +
                                     "Key = Value  ;";
 
-            IniFile file = LoadIniFileContent(iniFileContent, new IniOptions());
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
 
             Assert.AreEqual(Environment.NewLine + "Section's trailing comment;", file.Sections[0].TrailingComment.Text);
             Assert.AreEqual("Section", file.Sections[0].Name);
@@ -229,7 +229,7 @@ namespace MadMilkman.Ini.Tests
                                     "Key = " + Environment.NewLine +
                                     "Key = ;";
 
-            IniFile file = LoadIniFileContent(iniFileContent, new IniOptions());
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
 
             Assert.IsEmpty(file.Sections[0].Keys[0].Value);
             Assert.IsNull(file.Sections[0].Keys[0].LeadingComment.Text);
@@ -255,16 +255,6 @@ namespace MadMilkman.Ini.Tests
             Assert.IsEmpty(file.Sections[0].Keys[7].Value);
             Assert.IsEmpty(file.Sections[0].Keys[7].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[7].LeadingComment.LeftIndentation);
-        }
-
-        private static IniFile LoadIniFileContent(string iniFileContent, IniOptions options)
-        {
-            IniFile file = new IniFile(options);
-
-            using (var stream = new MemoryStream(options.Encoding.GetBytes(iniFileContent)))
-                file.Load(stream);
-
-            return file;
         }
     }
 }

@@ -185,9 +185,9 @@ Module IniSamples
             file.Load(stream)
         End Using
 
-        ' Map "yes" value as "true" boolean.
+        ' Map 'yes' value as 'true' boolean.
         file.ValueMappings.Add("yes", True)
-        ' Map "no" value as "false" boolean.
+        ' Map 'no' value as 'false' boolean.
         file.ValueMappings.Add("no", False)
 
         Dim playerSection As IniSection = file.Sections("Player")
@@ -213,6 +213,59 @@ Module IniSamples
         playerSection.Keys("Game Time").TryParseValue(playerGameTime)
     End Sub
 
+    Private Sub BindInternal()
+        Dim file As New IniFile()
+        Dim content As String = "[Machine Settings]" + Environment.NewLine +
+                                "Program Files = C:\Program Files" + Environment.NewLine +
+                                "[Application Settings]" + Environment.NewLine +
+                                "Name = Example App" + Environment.NewLine +
+                                "Version = 1.0" + Environment.NewLine +
+                                "Full Name = @{Name} v@{Version}" + Environment.NewLine +
+                                "Executable Path = @{Machine Settings|Program Files}\@{Name}.exe"
+        Using stream As Stream = New MemoryStream(Encoding.ASCII.GetBytes(content))
+            file.Load(stream)
+        End Using
+
+        ' Bind placeholders with file's content, internal information.
+        file.ValueBinding.Bind()
+
+        ' Retrieve application's full name, value is "Example App v1.0".
+        Dim appFullName As String = file.Sections("Application Settings").Keys("Full Name").Value
+
+        ' Retrieve application's executable path, value is "C:\\Program Files\\Example App.exe".
+        Dim appExePath As String = file.Sections("Application Settings").Keys("Executable Path").Value
+    End Sub
+
+    Private Sub BindExternal()
+        Dim file As New IniFile()
+        Dim content As String = "[User's Settings]" + Environment.NewLine +
+                                "Nickname = @{User Alias}" + Environment.NewLine +
+                                "Full Name = @{User Name} @{User Surname}" + Environment.NewLine +
+                                "Profile Page = @{Homepage}/Profiles/@{User Alias}"
+        Using stream As Stream = New MemoryStream(Encoding.ASCII.GetBytes(content))
+            file.Load(stream)
+        End Using
+
+        ' Bind placeholders with user's data, external information.
+        file.ValueBinding.Bind(
+            New Dictionary(Of String, String)() From
+            {
+                {"User Alias", "Johny"},
+                {"User Name", "John"},
+                {"User Surname", "Doe"}
+            })
+
+        ' Bind 'Homepage' placeholder with 'www.example.com' value.
+        file.ValueBinding.Bind(
+            New KeyValuePair(Of String, String)("Homepage", "www.example.com"))
+
+        ' Retrieve user's full name, value is "John Doe".
+        Dim userFullName As String = file.Sections("User's Settings").Keys("Full Name").Value
+
+        ' Retrieve user's profile page, value is "www.example.com/Profiles/Johny".
+        Dim userProfilePage As String = file.Sections("User's Settings").Keys("Profile Page").Value
+    End Sub
+
     Sub Main()
         HelloWorld()
 
@@ -229,6 +282,10 @@ Module IniSamples
         Copy()
 
         Parse()
+
+        BindInternal()
+
+        BindExternal()
     End Sub
 
 End Module
