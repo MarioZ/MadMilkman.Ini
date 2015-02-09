@@ -11,9 +11,9 @@ namespace MadMilkman.Ini
     /// <remarks>
     /// <para><see cref="IniValueBinding"/> can be accessed through <see cref="IniFile.ValueBinding"/> property.</para>
     /// <para>Binding can be executed with internal data source or with a provided external data source.</para>
-    /// <para>For more information see <see href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniFile's Value Binding</see>.</para>
+    /// <para>For more information see <see href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</see>.</para>
     /// </remarks>
-    /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniFile's Value Binding</seealso>
+    /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</seealso>
     public sealed class IniValueBinding
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
@@ -32,7 +32,7 @@ namespace MadMilkman.Ini
         /// <summary>
         /// Executes a binding operation with internal data source.
         /// </summary>
-        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniFile's Value Binding</seealso>
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</seealso>
         public void Bind()
         {
             foreach (var placeholderPair in this.GetPlaceholderPairs(null))
@@ -66,7 +66,7 @@ namespace MadMilkman.Ini
         /// Executes a binding operation with external data source.
         /// </summary>
         /// <param name="dataSource">The binding data source.</param>
-        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniFile's Value Binding</seealso>
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</seealso>
         public void Bind(object dataSource) { this.Bind(dataSource, null); }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace MadMilkman.Ini
         /// </summary>
         /// <param name="dataSource">The binding data source.</param>
         /// <param name="sectionName">The <see cref="IniSection"/>'s name.</param>
-        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniFile's Value Binding</seealso>
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</seealso>
         public void Bind(object dataSource, string sectionName)
         {
             if (dataSource == null)

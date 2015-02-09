@@ -209,7 +209,7 @@ namespace MadMilkman.Ini.Samples.CS
             playerSection.Keys["Birthday"].TryParseValue(out playerBirthday);
 
             // Retrieve player's marital status as bool.
-            // TryParseValue succeeds due to the mapping of "yes" value to "true" boolean.
+            // TryParseValue succeeds due to the mapping of 'yes' value to 'true' boolean.
             bool playerMarried;
             playerSection.Keys["Married"].TryParseValue(out playerMarried);
 
@@ -238,10 +238,10 @@ namespace MadMilkman.Ini.Samples.CS
             // Bind placeholders with file's content, internal information.
             file.ValueBinding.Bind();
 
-            // Retrieve application's full name, value is "Example App v1.0".
+            // Retrieve application's full name, value is 'Example App v1.0'.
             string appFullName = file.Sections["Application Settings"].Keys["Full Name"].Value;
 
-            // Retrieve application's executable path, value is "C:\\Program Files\\Example App.exe".
+            // Retrieve application's executable path, value is 'C:\\Program Files\\Example App.exe'.
             string appExePath = file.Sections["Application Settings"].Keys["Executable Path"].Value;
         }
 
@@ -268,10 +268,10 @@ namespace MadMilkman.Ini.Samples.CS
             file.ValueBinding.Bind(
                 new KeyValuePair<string, string>("Homepage", "www.example.com"));
 
-            // Retrieve user's full name, value is "John Doe".
+            // Retrieve user's full name, value is 'John Doe'.
             string userFullName = file.Sections["User's Settings"].Keys["Full Name"].Value;
 
-            // Retrieve user's profile page, value is "www.example.com/Profiles/Johny".
+            // Retrieve user's profile page, value is 'www.example.com/Profiles/Johny'.
             string userProfilePage = file.Sections["User's Settings"].Keys["Profile Page"].Value;
         }
 

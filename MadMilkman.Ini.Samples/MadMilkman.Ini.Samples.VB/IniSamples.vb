@@ -200,7 +200,7 @@ Module IniSamples
         playerSection.Keys("Birthday").TryParseValue(playerBirthday)
 
         ' Retrieve player's marital status as bool.
-        ' TryParseValue succeeds due to the mapping of "yes" value to "true" boolean.
+        ' TryParseValue succeeds due to the mapping of 'yes' value to 'true' boolean.
         Dim playerMarried As Boolean
         playerSection.Keys("Married").TryParseValue(playerMarried)
 
@@ -229,10 +229,10 @@ Module IniSamples
         ' Bind placeholders with file's content, internal information.
         file.ValueBinding.Bind()
 
-        ' Retrieve application's full name, value is "Example App v1.0".
+        ' Retrieve application's full name, value is 'Example App v1.0'.
         Dim appFullName As String = file.Sections("Application Settings").Keys("Full Name").Value
 
-        ' Retrieve application's executable path, value is "C:\\Program Files\\Example App.exe".
+        ' Retrieve application's executable path, value is 'C:\\Program Files\\Example App.exe'.
         Dim appExePath As String = file.Sections("Application Settings").Keys("Executable Path").Value
     End Sub
 
@@ -259,10 +259,10 @@ Module IniSamples
         file.ValueBinding.Bind(
             New KeyValuePair(Of String, String)("Homepage", "www.example.com"))
 
-        ' Retrieve user's full name, value is "John Doe".
+        ' Retrieve user's full name, value is 'John Doe'.
         Dim userFullName As String = file.Sections("User's Settings").Keys("Full Name").Value
 
-        ' Retrieve user's profile page, value is "www.example.com/Profiles/Johny".
+        ' Retrieve user's profile page, value is 'www.example.com/Profiles/Johny'.
         Dim userProfilePage As String = file.Sections("User's Settings").Keys("Profile Page").Value
     End Sub
 

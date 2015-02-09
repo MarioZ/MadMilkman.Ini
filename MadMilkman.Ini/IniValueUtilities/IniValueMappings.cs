@@ -10,9 +10,9 @@ namespace MadMilkman.Ini
     /// <remarks>
     /// <para><see cref="IniValueMappings"/> can be accessed through <see cref="IniFile.ValueMappings"/> property.</para>
     /// <para>Mapped value results have priority over parsing the value.</para>
-    /// <para>For more information see <see href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniFile's Value Parsing</see>.</para>
+    /// <para>For more information see <see href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniKey's Value Parsing</see>.</para>
     /// </remarks>
-    /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniFile's Value Parsing</seealso>
+    /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniKey's Value Parsing</seealso>
     public sealed class IniValueMappings
     {
         private readonly IDictionary<string, object> mappings;

@@ -12,6 +12,8 @@ namespace MadMilkman.Ini
         /// <summary>
         /// Gets and sets <see cref="IniKey"/> value.
         /// </summary>
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniKey's Value Parsing</seealso>
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#binding" target="_self">IniKey's Value Binding</seealso>
         public string Value { get; set; }
 
         /// <summary>

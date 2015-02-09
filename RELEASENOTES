@@ -1,3 +1,4 @@
+[1.0.3.0]  NEW RELEASE
 [1.0.2.3]  Added support for defining placeholders in IniKey.Value and binding them with internal or external data source.
 [1.0.2.2]  Added support for IniKey.ParentSection property.
 [1.0.2.1]  Switched from MS tests to NUnit tests.
