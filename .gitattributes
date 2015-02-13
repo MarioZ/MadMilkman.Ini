@@ -1,6 +1,7 @@
 # Linguist overrides
-MadMilkman.Ini/IniEnums/IniCommentStarter.cs linguist-language=csharp
-MadMilkman.Ini/IniEnums/IniKeyDelimiter.cs linguist-language=csharp
+$ cat .gitattributes
+/MadMilkman.Ini/IniEnums/IniCommentStarter.cs linguist-language=csharp
+/MadMilkman.Ini/IniEnums/IniKeyDelimiter.cs linguist-language=csharp
 *.h linguist-language=cpp
 
 # Auto detect text files and perform LF normalization
