@@ -1,9 +1,11 @@
+# Linguist overrides
+*.cs linguist-language=csharp
+*.h linguist-language=cpp
+
 # Auto detect text files and perform LF normalization
 * text=auto
 
 # Custom for Visual Studio
-*.cs      diff=csharp
-*.h       diff=cpp
 *.sln     merge=union
 *.csproj  merge=union
 *.vbproj  merge=union
