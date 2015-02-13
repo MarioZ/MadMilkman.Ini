@@ -1,5 +1,6 @@
 # Linguist overrides
-*.cs linguist-language=csharp
+*/IniCommentStarter.cs linguist-language=csharp
+*/IniKeyDelimiter.cs linguist-language=csharp
 *.h linguist-language=cpp
 
 # Auto detect text files and perform LF normalization
