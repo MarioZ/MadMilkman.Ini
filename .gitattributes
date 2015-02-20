@@ -1,5 +1,4 @@
 # Linguist overrides
-MadMilkman.Ini/IniEnums/*.cs linguist-language=csharp
 *.h linguist-language=cpp
 
 # Auto detect text files and perform LF normalization

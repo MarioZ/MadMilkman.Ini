@@ -98,10 +98,10 @@ namespace MadMilkman.Ini
                 this.currentSection = new IniSection(file,
                                                      line.Substring(leftIndention + 1, sectionEndIndex - leftIndention - 1),
                                                      this.currentTrailingComment)
-                {
-                    LeftIndentation = leftIndention,
-                    LeadingComment = { EmptyLinesBefore = this.currentEmptyLinesBefore }
-                };
+                                      {
+                                          LeftIndentation = leftIndention,
+                                          LeadingComment = { EmptyLinesBefore = this.currentEmptyLinesBefore }
+                                      };
                 file.Sections.Add(this.currentSection);
 
                 if (++sectionEndIndex < line.Length)
@@ -134,10 +134,10 @@ namespace MadMilkman.Ini
                 var currentKey = new IniKey(file,
                                             line.Substring(leftIndention, keyDelimiterIndex - leftIndention).TrimEnd(),
                                             this.currentTrailingComment)
-                {
-                    LeftIndentation = leftIndention,
-                    LeadingComment = { EmptyLinesBefore = this.currentEmptyLinesBefore }
-                };
+                                 {
+                                     LeftIndentation = leftIndention,
+                                     LeadingComment = { EmptyLinesBefore = this.currentEmptyLinesBefore }
+                                 };
 
                 this.currentSection.Keys.Add(currentKey);
 
