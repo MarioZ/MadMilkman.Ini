@@ -61,6 +61,8 @@
     <Compile Include="IniItems\IniSection.cs" />
     <Compile Include="IniOptions.cs" />
     <Compile Include="IniItemsCollection\IniSectionCollection.cs" />
+    <Compile Include="IniReaderWriter\IniCompressor.cs" />
+    <Compile Include="IniReaderWriter\IniEncryptor.cs" />
     <Compile Include="IniReaderWriter\IniReader.cs" />
     <Compile Include="IniReaderWriter\IniWriter.cs" />
     <Compile Include="IniValueUtilities\IniValueBinding.cs" />

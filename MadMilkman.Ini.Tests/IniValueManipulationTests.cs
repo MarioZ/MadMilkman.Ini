@@ -4,8 +4,8 @@ using NUnit.Framework;
 
 namespace MadMilkman.Ini.Tests
 {
-    [TestFixture, Category("Manipulating IniFile's content")]
-    public class IniFileMiscellaneousTests
+    [TestFixture]
+    public class IniValueManipulationTests
     {
         [Test]
         public void IniItemParentsTest()

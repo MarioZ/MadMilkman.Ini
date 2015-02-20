@@ -18,6 +18,14 @@ namespace MadMilkman.Ini
     /// <description><see cref="IniCommentStarter.Semicolon"/></description>
     /// </item>
     /// <item>
+    /// <term><see cref="IniOptions.CommentStarter">Compression</see></term>
+    /// <description><see langword="false"/></description>
+    /// </item>
+    /// <item>
+    /// <term><see cref="IniOptions.CommentStarter">EncryptionPassword</see></term>
+    /// <description><see langword="null"/></description>
+    /// </item>
+    /// <item>
     /// <term><see cref="IniOptions.Encoding">Encoding</see></term>
     /// <description><see cref="System.Text.Encoding.ASCII">Encoding.ASCII</see></description>
     /// </item>
@@ -85,6 +93,18 @@ namespace MadMilkman.Ini
         public IniCommentStarter CommentStarter { get; set; }
 
         /// <summary>
+        /// <para>Gets or sets a value indicating if file's size is reduced.</para>
+        /// <para>If <see langword="true"/> file is decompressed on Load and compressed on Save.</para>
+        /// </summary>
+        public bool Compression { get; set; }
+
+        /// <summary>
+        /// <para>Gets or sets an INI file's protection password.</para>
+        /// <para>File is decrypted on Load and encrypted on Save if a password is not <see langword="null"/> or <see cref="System.String.Empty"/>.</para>
+        /// </summary>
+        public string EncryptionPassword { get; set; }
+
+        /// <summary>
         /// Gets or sets keys name and value delimiter character.
         /// </summary>
         public IniKeyDelimiter KeyDelimiter { get; set; }
@@ -134,6 +154,8 @@ namespace MadMilkman.Ini
         {
             this.encoding = Encoding.ASCII;
             this.CommentStarter = IniCommentStarter.Semicolon;
+            this.Compression = false;
+            this.EncryptionPassword = null;
             this.KeyDelimiter = IniKeyDelimiter.Equal;
             this.KeyDuplicate = IniDuplication.Allowed;
             this.KeyNameCaseSensitive = false;
@@ -148,6 +170,8 @@ namespace MadMilkman.Ini
         {
             this.encoding = options.encoding;
             this.CommentStarter = options.CommentStarter;
+            this.Compression = options.Compression;
+            this.EncryptionPassword = options.EncryptionPassword;
             this.KeyDelimiter = options.KeyDelimiter;
             this.KeyDuplicate = options.KeyDuplicate;
             this.KeyNameCaseSensitive = options.KeyNameCaseSensitive;

@@ -66,9 +66,7 @@ Module IniSamples
                                    "Key 1.2 = Value 1.2" + Environment.NewLine +
                                    "Key 1.3 = Value 1.3" + Environment.NewLine +
                                    "Key 1.4 = Value 1.4"
-        Using stream As Stream = New MemoryStream(options.Encoding.GetBytes(iniContent))
-            iniFile.Load(stream)
-        End Using
+        iniFile.Load(New StringReader(iniContent))
 
         ' Read file's content.
         For Each section In iniFile.Sections
@@ -122,11 +120,9 @@ Module IniSamples
         End Using
 
         ' Save file's content to string.
-        Dim iniContent As String
-        Using stream As Stream = New MemoryStream()
-            iniFile.Save(stream)
-            iniContent = New StreamReader(stream, options.Encoding).ReadToEnd()
-        End Using
+        Dim contentWriter As New StringWriter()
+        iniFile.Save(contentWriter)
+        Dim iniContent As String = contentWriter.ToString()
 
         Console.WriteLine(iniContent)
     End Sub

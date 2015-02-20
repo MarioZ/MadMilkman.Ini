@@ -3,6 +3,8 @@ using System.IO;
 
 namespace MadMilkman.Ini
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable",
+     Justification = "StringReader doesn't have unmanaged resources.")]
     internal sealed class IniReader
     {
         private readonly IniOptions options;
@@ -20,9 +22,9 @@ namespace MadMilkman.Ini
             this.currentSection = null;
         }
 
-        public void Read(IniFile iniFile, TextReader reader)
+        public void Read(IniFile iniFile, TextReader textReader)
         {
-            this.reader = reader;
+            this.reader = new StringReader(this.DecompressAndDecryptText(textReader.ReadToEnd()));
 
             string line;
             while ((line = this.reader.ReadLine()) != null)
@@ -32,6 +34,17 @@ namespace MadMilkman.Ini
                 else
                     this.ReadLine(line, iniFile);
             }
+        }
+
+        private string DecompressAndDecryptText(string fileContent)
+        {
+            if (this.options.Compression)
+                fileContent = IniCompressor.Decompress(fileContent, this.options.Encoding);
+
+            if (!string.IsNullOrEmpty(this.options.EncryptionPassword))
+                fileContent = IniEncryptor.Decrypt(fileContent, this.options.EncryptionPassword, this.options.Encoding);
+
+            return fileContent;
         }
 
         private void ReadLine(string line, IniFile file)
@@ -85,10 +98,10 @@ namespace MadMilkman.Ini
                 this.currentSection = new IniSection(file,
                                                      line.Substring(leftIndention + 1, sectionEndIndex - leftIndention - 1),
                                                      this.currentTrailingComment)
-                                                     {
-                                                         LeftIndentation = leftIndention,
-                                                         LeadingComment = { EmptyLinesBefore = this.currentEmptyLinesBefore }
-                                                     };
+                {
+                    LeftIndentation = leftIndention,
+                    LeadingComment = { EmptyLinesBefore = this.currentEmptyLinesBefore }
+                };
                 file.Sections.Add(this.currentSection);
 
                 if (++sectionEndIndex < line.Length)
@@ -121,10 +134,10 @@ namespace MadMilkman.Ini
                 var currentKey = new IniKey(file,
                                             line.Substring(leftIndention, keyDelimiterIndex - leftIndention).TrimEnd(),
                                             this.currentTrailingComment)
-                                            {
-                                                LeftIndentation = leftIndention,
-                                                LeadingComment = { EmptyLinesBefore = this.currentEmptyLinesBefore }
-                                            };
+                {
+                    LeftIndentation = leftIndention,
+                    LeadingComment = { EmptyLinesBefore = this.currentEmptyLinesBefore }
+                };
 
                 this.currentSection.Keys.Add(currentKey);
 

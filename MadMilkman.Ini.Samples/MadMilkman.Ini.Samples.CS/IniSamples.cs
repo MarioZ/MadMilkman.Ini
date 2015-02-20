@@ -71,8 +71,7 @@ namespace MadMilkman.Ini.Samples.CS
                                 "Key 1.2 = Value 1.2" + Environment.NewLine +
                                 "Key 1.3 = Value 1.3" + Environment.NewLine +
                                 "Key 1.4 = Value 1.4";
-            using (Stream stream = new MemoryStream(options.Encoding.GetBytes(iniContent)))
-                iniFile.Load(stream);
+            iniFile.Load(new StringReader(iniContent));
 
             // Read file's content.
             foreach (var section in iniFile.Sections)
@@ -127,12 +126,9 @@ namespace MadMilkman.Ini.Samples.CS
                 iniFile.Save(stream);
 
             // Save file's content to string.
-            string iniContent;
-            using (Stream stream = new MemoryStream())
-            {
-                iniFile.Save(stream);
-                iniContent = new StreamReader(stream, options.Encoding).ReadToEnd();
-            }
+            StringWriter contentWriter = new StringWriter();
+            iniFile.Save(contentWriter);
+            string iniContent = contentWriter.ToString();
 
             Console.WriteLine(iniContent);
         }

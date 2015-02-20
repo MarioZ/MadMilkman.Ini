@@ -50,7 +50,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IniFileCreateUpdateTests.cs" />
-    <Compile Include="IniFileMiscellaneousTests.cs" />
+    <Compile Include="IniFileEncryptionCompressionTests.cs" />
+    <Compile Include="IniValueManipulationTests.cs" />
     <Compile Include="IniFileWriteTests.cs" />
     <Compile Include="IniUtilities.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

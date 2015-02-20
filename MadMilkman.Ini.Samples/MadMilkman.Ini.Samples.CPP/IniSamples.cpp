@@ -68,9 +68,7 @@ void Load()
 						 "Key 1.2 = Value 1.2" + Environment::NewLine + 
 						 "Key 1.3 = Value 1.3" + Environment::NewLine + 
 						 "Key 1.4 = Value 1.4";
-	Stream^ contentStream = gcnew MemoryStream(options->Encoding->GetBytes(iniContent));
-	try	{ iniFile->Load(contentStream);	}
-	finally	{ delete contentStream;	}
+	iniFile->Load(gcnew StringReader(iniContent));
 
 	// Read file's content.
 	for each (IniSection^ section in iniFile->Sections)
@@ -128,14 +126,9 @@ void Save()
 	finally	{ delete fileStream; }
 
 	// Save file's content to string.
-	String^ iniContent;
-	Stream^ contentStream = gcnew MemoryStream();
-	try
-	{
-		iniFile->Save(contentStream);
-		iniContent = (gcnew StreamReader(contentStream, options->Encoding))->ReadToEnd();
-	}
-	finally	{ delete contentStream; }
+	StringWriter^ contentWriter = gcnew StringWriter();
+	iniFile->Save(contentWriter);
+	String^ iniContent = contentWriter->ToString();
 
 	Console::WriteLine(iniContent);
 }

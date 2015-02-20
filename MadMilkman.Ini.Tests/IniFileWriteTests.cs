@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace MadMilkman.Ini.Tests
 {
-    [TestFixture, Category("Writing INI files")]
+    [TestFixture]
     public class IniFileWriteTests
     {
         [Test]

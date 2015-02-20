@@ -3,6 +3,8 @@ using System.IO;
 
 namespace MadMilkman.Ini
 {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable",
+     Justification = "StringWriter doesn't have unmanaged resources.")]
     internal sealed class IniWriter
     {
         private static readonly string[] NewLines = { "\r\n", "\n", "\r" };
@@ -11,11 +13,24 @@ namespace MadMilkman.Ini
 
         public IniWriter(IniOptions options) { this.options = options; }
 
-        public void Write(IniFile iniFile, TextWriter writer)
+        public void Write(IniFile iniFile, TextWriter textWriter)
         {
-            this.writer = writer;
+            this.writer = new StringWriter(System.Globalization.CultureInfo.InvariantCulture);
             this.WriteSections(iniFile.Sections);
-            this.writer.Flush();
+
+            textWriter.Write(this.EncryptAndCompressText(this.writer.ToString()));
+            textWriter.Flush();
+        }
+
+        private string EncryptAndCompressText(string fileContent)
+        {
+            if (!string.IsNullOrEmpty(this.options.EncryptionPassword))
+                fileContent = IniEncryptor.Encrypt(fileContent, this.options.EncryptionPassword, this.options.Encoding);
+
+            if (this.options.Compression)
+                fileContent = IniCompressor.Compress(fileContent, this.options.Encoding);
+
+            return fileContent;
         }
 
         private void WriteSections(IniSectionCollection sections)

@@ -5,7 +5,7 @@ using NUnit.Framework;
 
 namespace MadMilkman.Ini.Tests
 {
-    [TestFixture, Category("Reading INI files")]
+    [TestFixture]
     public class IniFileReadTests
     {
         [Test]
