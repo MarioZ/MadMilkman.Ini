@@ -4,9 +4,10 @@ It is 100% managed code (C#), **compatible with Mono framework**, which provides
 
 ## Advantages:
 * Enables reading and writing of various INI file formats.
-* Enables accessing and updating INI file's content.
-* Enables creating and deleting INI file's content.
+* Enables easy manipulation of INI file's content.
 * Enables copying and merging multiple INI file's contents.
+* Enables encrypting and decrypting INI files.
+* Enables compressing and decompressing INI files.
 
 ## Installation
 You can use this component in any way that suits you:

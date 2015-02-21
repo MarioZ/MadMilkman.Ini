@@ -5,7 +5,9 @@
 * text=auto
 
 # Custom for Visual Studio
-*.sln     merge=union
-*.csproj  merge=union
-*.vbproj  merge=union
+*.cs     diff=csharp
+*.sln    merge=union
+*.csproj merge=union
+*.vbproj merge=union
 *.vcxproj merge=union
+*.vcxproj.filters merge=union
