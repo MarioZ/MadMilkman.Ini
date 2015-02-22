@@ -17,9 +17,16 @@ namespace MadMilkman.Ini
     public sealed class IniValueBinding
     {
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly IniValueBindingEventArgs args;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IniFile iniFile;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private static readonly Regex placeholderPattern = new Regex(@"@\{[\w\s|]+\}", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
+        /// <summary>
+        /// Occurs when a placeholder is binding with data source value and can be used to customize the binding operation.
+        /// </summary>
+        public event EventHandler<IniValueBindingEventArgs> Binding;
 
         internal IniValueBinding(IniFile iniFile)
         {
@@ -27,6 +34,7 @@ namespace MadMilkman.Ini
                 throw new ArgumentNullException("iniFile");
 
             this.iniFile = iniFile;
+            this.args = new IniValueBindingEventArgs();
         }
 
         /// <summary>
@@ -39,13 +47,14 @@ namespace MadMilkman.Ini
             {
                 IniKey placeholderKey = placeholderPair.Key;
                 string placeholder = placeholderPair.Value;
+                string placeholderName = placeholder.Substring(2, placeholder.Length - 3);
+                string targetedValue;
 
                 int separator = placeholder.IndexOf('|');
-                string targetedValue;
                 if (separator != -1)
                 {
                     var targetedSection = this.iniFile.Sections[placeholder.Substring(2, separator - 2)];
-                    if(targetedSection == null)
+                    if (targetedSection == null)
                         continue;
 
                     targetedValue = GetTargetedValue(
@@ -55,10 +64,9 @@ namespace MadMilkman.Ini
                 else
                     targetedValue = GetTargetedValue(
                                         placeholderKey.ParentSection,
-                                        placeholder.Substring(2, placeholder.Length - 3));
+                                        placeholderName);
 
-                if (targetedValue != null)
-                    placeholderKey.Value = placeholderKey.Value.Replace(placeholder, targetedValue);
+                this.ExecuteBinding(placeholder, placeholderName, placeholderKey, targetedValue);
             }
         }
 
@@ -88,11 +96,26 @@ namespace MadMilkman.Ini
             {
                 IniKey placeholderKey = placeholderPair.Key;
                 string placeholder = placeholderPair.Value;
+                string placeholderName = placeholder.Substring(2, placeholder.Length - 3);
+                string targetedValue;
 
-                string dataSourceValue;
-                if (dataSourceDictionary.TryGetValue(placeholder.Substring(2, placeholder.Length - 3), out dataSourceValue))
-                    placeholderKey.Value = placeholderKey.Value.Replace(placeholder, dataSourceValue);
+                dataSourceDictionary.TryGetValue(placeholderName, out targetedValue);
+
+                this.ExecuteBinding(placeholder, placeholderName, placeholderKey, targetedValue);
             }
+        }
+
+        private void ExecuteBinding(string placeholder, string placeholderName, IniKey placeholderKey, string targetedValue)
+        {
+            this.args.Initialize(placeholderName, placeholderKey, targetedValue, targetedValue != null);
+
+            if (this.Binding != null)
+                this.Binding(this, this.args);
+
+            if (this.args.Value != null)
+                placeholderKey.Value = placeholderKey.Value.Replace(placeholder, this.args.Value);
+
+            this.args.Reset();
         }
 
         // Returns placeholder pairs as KeyValuePair<IniKey, string>:

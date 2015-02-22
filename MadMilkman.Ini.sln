@@ -11,8 +11,10 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "MadMilkman.Ini.Samples.VB",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MadMilkman.Ini.Samples.Files", "MadMilkman.Ini.Samples.Files", "{AEF2490D-0F64-453B-9DCA-C1286517E311}"
 	ProjectSection(SolutionItems) = preProject
+		MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Compress Example.ini = MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Compress Example.ini
 		MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Custom Example Input.ini = MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Custom Example Input.ini
 		MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Custom Example Output.ini = MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Custom Example Output.ini
+		MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Encrypt Example.ini = MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Encrypt Example.ini
 		MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Load Example.ini = MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Load Example.ini
 		MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Save Example.ini = MadMilkman.Ini.Samples\MadMilkman.Ini.Samples.Files\Save Example.ini
 	EndProjectSection

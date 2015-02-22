@@ -184,9 +184,7 @@ void Parse()
 					  "Married = Yes" + Environment::NewLine +
 					  "Score = 9999999" + Environment::NewLine +
 					  "Game Time = 00:59:59";
-	Stream^ contentStream = gcnew MemoryStream(Encoding::ASCII->GetBytes(content));
-	try	{ file->Load(contentStream);	}
-	finally	{ delete contentStream;	}
+	file->Load(gcnew StringReader(content));
 
 	// Map 'yes' value as 'true' boolean.
 	file->ValueMappings->Add("yes", true);
@@ -226,9 +224,7 @@ void BindInternal()
 					  "Version = 1.0" + Environment::NewLine +
 					  "Full Name = @{Name} v@{Version}" + Environment::NewLine +
 					  "Executable Path = @{Machine Settings|Program Files}\\@{Name}.exe";
-	Stream^ stream = gcnew MemoryStream(Encoding::ASCII->GetBytes(content));
-	try { file->Load(stream); }
-	finally { delete stream; }
+	file->Load(gcnew StringReader(content));
 
 	// Bind placeholders with file's content, internal information.
 	file->ValueBinding->Bind();
@@ -247,9 +243,7 @@ void BindExternal()
 					  "Nickname = @{User Alias}" + Environment::NewLine +
 					  "Full Name = @{User Name} @{User Surname}" + Environment::NewLine +
 					  "Profile Page = @{Homepage}/Profiles/@{User Alias}";
-	Stream^ stream = gcnew MemoryStream(Encoding::ASCII->GetBytes(content));
-	try { file->Load(stream); }
-	finally { delete stream; }
+	file->Load(gcnew StringReader(content));
 
 	// Bind placeholders with user's data, external information.
 	Dictionary<String^, String^>^ userData = gcnew Dictionary<String^, String^>();

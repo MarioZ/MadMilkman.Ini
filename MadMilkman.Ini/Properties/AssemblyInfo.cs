@@ -18,5 +18,5 @@ using System.Resources;
 [assembly: AllowPartiallyTrustedCallers]
 [assembly: CLSCompliant(true)]
 
-[assembly: AssemblyVersion("1.0.3.1")]
+[assembly: AssemblyVersion("1.0.3.2")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]

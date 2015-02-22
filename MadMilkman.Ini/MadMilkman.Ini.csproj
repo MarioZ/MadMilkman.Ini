@@ -66,6 +66,7 @@
     <Compile Include="IniReaderWriter\IniReader.cs" />
     <Compile Include="IniReaderWriter\IniWriter.cs" />
     <Compile Include="IniValueUtilities\IniValueBinding.cs" />
+    <Compile Include="IniValueUtilities\IniValueBindingEventArgs.cs" />
     <Compile Include="IniValueUtilities\IniValueMappings.cs" />
     <Compile Include="IniValueUtilities\IniValueParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

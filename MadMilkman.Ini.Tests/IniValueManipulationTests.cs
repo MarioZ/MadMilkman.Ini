@@ -268,5 +268,50 @@ namespace MadMilkman.Ini.Tests
             file.ValueBinding.Bind(new KeyValuePair<string, string>("Nested Tester", "Nested Source Value"));
             Assert.AreEqual("Nested Source Value", bindedSection.Keys["Test Key Nested"].Value);
         }
+
+        [Test]
+        public void BindValueCustomization()
+        {
+            string iniFileContent = "[Binding Customization Section]\n" +
+                                    "Test Key 1 = @{First Tester}\n" +
+                                    "Test Key 2-3 = @{Second Tester} and @{Third Tester}\n" +
+                                    "Test Key 2-4 = @{Second Tester} and @{Fourth Tester}\n" +
+                                    "Test Key X = @{Unknown}";
+
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
+            file.ValueBinding.Binding += (sender, e) =>
+            {
+                if (!e.IsValueFound)
+                    e.Value = "Missing";
+                else
+                    switch (e.PlaceholderName)
+                    {
+                        case "First Tester":
+                            e.Value = "Custom " + e.Value;
+                            break;
+                        case "Third Tester":
+                            e.Value = null;
+                            break;
+                        case "Fourth Tester":
+                            e.Value = string.Empty;
+                            break;
+                    }
+            };
+
+            file.ValueBinding.Bind(
+                new Dictionary<string, string>()
+                {
+                    {"First Tester", "Source Value 1"},
+                    {"Second Tester", "Source Value 2"},
+                    {"Third Tester", "Source Value 3"},
+                    {"Fourth Tester", "Source Value 4"}
+                });
+
+            var bindedSection = file.Sections["Binding Customization Section"];
+            Assert.AreEqual("Custom Source Value 1", bindedSection.Keys["Test Key 1"].Value);
+            Assert.AreEqual("Source Value 2 and @{Third Tester}", bindedSection.Keys["Test Key 2-3"].Value);
+            Assert.AreEqual("Source Value 2 and ", bindedSection.Keys["Test Key 2-4"].Value);
+            Assert.AreEqual("Missing", bindedSection.Keys["Test Key X"].Value);
+        }
     }
 }

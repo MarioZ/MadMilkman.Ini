@@ -133,6 +133,48 @@ namespace MadMilkman.Ini.Samples.CS
             Console.WriteLine(iniContent);
         }
 
+        private static void Encrypt()
+        {
+            // Enable file's protection by providing an encryption password.
+            var options = new IniOptions() { EncryptionPassword = "M4dM1lkM4n.1n1" };
+            var file = new IniFile(options);
+
+            var section = file.Sections.Add("User's Account");
+            section.Keys.Add("Username", "John Doe");
+            section.Keys.Add("Password", @"P@55\/\/0|2D");
+
+            // Save and encrypt the file.
+            file.Save(@"..\..\..\MadMilkman.Ini.Samples.Files\Encrypt Example.ini");
+
+            file.Sections.Clear();
+
+            // Load and dencrypt the file.
+            file.Load(@"..\..\..\MadMilkman.Ini.Samples.Files\Encrypt Example.ini");
+
+            Console.WriteLine("User Name: {0}", file.Sections[0].Keys["Username"].Value);
+            Console.WriteLine("Password: {0}", file.Sections[0].Keys["Password"].Value);
+        }
+
+        private static void Compress()
+        {
+            // Enable file's size reduction.
+            var options = new IniOptions() { Compression = true };
+            var file = new IniFile(options);
+
+            for (int i = 1; i <= 100; i++)
+                file.Sections.Add("Section " + i).Keys.Add("Key " + i, "Value " + i);
+
+            // Save and compress the file.
+            file.Save(@"..\..\..\MadMilkman.Ini.Samples.Files\Compress Example.ini");
+
+            file.Sections.Clear();
+
+            // Load and decompress the file.
+            file.Load(@"..\..\..\MadMilkman.Ini.Samples.Files\Compress Example.ini");
+
+            Console.WriteLine(file.Sections.Count);
+        }
+
         private static void Custom()
         {
             // Create new file with custom formatting.
@@ -187,8 +229,7 @@ namespace MadMilkman.Ini.Samples.CS
                              "Married = Yes" + Environment.NewLine +
                              "Score = 9999999" + Environment.NewLine +
                              "Game Time = 00:59:59";
-            using (Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(content)))
-                file.Load(stream);
+            file.Load(new StringReader(content));
 
             // Map 'yes' value as 'true' boolean.
             file.ValueMappings.Add("yes", true);
@@ -228,8 +269,7 @@ namespace MadMilkman.Ini.Samples.CS
                              "Version = 1.0" + Environment.NewLine +
                              "Full Name = @{Name} v@{Version}" + Environment.NewLine +
                              "Executable Path = @{Machine Settings|Program Files}\\@{Name}.exe";
-            using (Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(content)))
-                file.Load(stream);
+            file.Load(new StringReader(content));
 
             // Bind placeholders with file's content, internal information.
             file.ValueBinding.Bind();
@@ -248,8 +288,7 @@ namespace MadMilkman.Ini.Samples.CS
                              "Nickname = @{User Alias}" + Environment.NewLine +
                              "Full Name = @{User Name} @{User Surname}" + Environment.NewLine +
                              "Profile Page = @{Homepage}/Profiles/@{User Alias}";
-            using (Stream stream = new MemoryStream(Encoding.ASCII.GetBytes(content)))
-                file.Load(stream);
+            file.Load(new StringReader(content));
 
             // Bind placeholders with user's data, external information.
             file.ValueBinding.Bind(
@@ -271,6 +310,74 @@ namespace MadMilkman.Ini.Samples.CS
             string userProfilePage = file.Sections["User's Settings"].Keys["Profile Page"].Value;
         }
 
+        private static void BindCustomization()
+        {
+            IniFile file = new IniFile();
+            string content = "[Player]" + Environment.NewLine +
+                             "Name = @{Name}" + Environment.NewLine +
+                             "Surname = @{Surname}" + Environment.NewLine +
+                             "Adult = @{Age}" + Environment.NewLine +
+                             "Medal = @{Rank}";
+
+            file.Load(new StringReader(content));
+
+            // Customize binding operation.
+            file.ValueBinding.Binding += (sender, e) =>
+            {
+                // Set placeholders that do not have a value in data source to 'UNKNOWN'.
+                if (!e.IsValueFound)
+                {
+                    e.Value = "UNKNOWN";
+                    return;
+                }
+
+                // Set 'Age' placeholder inside 'Adult' key to an appropriate value.
+                if (e.PlaceholderKey.Name.Equals("Adult") && e.PlaceholderName.Equals("Age"))
+                {
+                    int age;
+                    if (int.TryParse(e.Value, out age))
+                        e.Value = (age >= 18) ? "YES" : "NO";
+                    else
+                        e.Value = "UNKNOWN";
+                    return;
+                }
+
+                // Set 'Rank' placeholder inside 'Medal' key to an appropriate value.
+                if (e.PlaceholderKey.Name.Equals("Medal") && e.PlaceholderName.Equals("Rank"))
+                {
+                    int rank;
+                    if (int.TryParse(e.Value, out rank))
+                        switch (rank)
+                        {
+                            case 1:
+                                e.Value = "GOLD";
+                                break;
+                            case 2:
+                                e.Value = "SILVER";
+                                break;
+                            case 3:
+                                e.Value = "BRONCE";
+                                break;
+                            default:
+                                e.Value = "NONE";
+                                break;
+                        }
+                    else
+                        e.Value = "UNKNOWN";
+                    return;
+                }
+            };
+
+            // Execute binding operation.
+            file.ValueBinding.Bind(
+                new Dictionary<string, string>
+                {
+                    {"Name", "John"},
+                    {"Age", "20"},
+                    {"Rank", "1"}
+                });
+        }
+
         static void Main()
         {
             HelloWorld();
@@ -283,6 +390,10 @@ namespace MadMilkman.Ini.Samples.CS
 
             Save();
 
+            Encrypt();
+
+            Compress();
+
             Custom();
 
             Copy();
@@ -292,6 +403,8 @@ namespace MadMilkman.Ini.Samples.CS
             BindInternal();
 
             BindExternal();
+
+            BindCustomization();
         }
     }
 }

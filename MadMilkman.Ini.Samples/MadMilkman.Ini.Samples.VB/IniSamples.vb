@@ -177,9 +177,7 @@ Module IniSamples
                                 "Married = Yes" + Environment.NewLine +
                                 "Score = 9999999" + Environment.NewLine +
                                 "Game Time = 00:59:59"
-        Using stream As Stream = New MemoryStream(Encoding.ASCII.GetBytes(content))
-            file.Load(stream)
-        End Using
+        file.Load(New StringReader(content))
 
         ' Map 'yes' value as 'true' boolean.
         file.ValueMappings.Add("yes", True)
@@ -218,9 +216,7 @@ Module IniSamples
                                 "Version = 1.0" + Environment.NewLine +
                                 "Full Name = @{Name} v@{Version}" + Environment.NewLine +
                                 "Executable Path = @{Machine Settings|Program Files}\@{Name}.exe"
-        Using stream As Stream = New MemoryStream(Encoding.ASCII.GetBytes(content))
-            file.Load(stream)
-        End Using
+        file.Load(New StringReader(content))
 
         ' Bind placeholders with file's content, internal information.
         file.ValueBinding.Bind()
@@ -238,9 +234,7 @@ Module IniSamples
                                 "Nickname = @{User Alias}" + Environment.NewLine +
                                 "Full Name = @{User Name} @{User Surname}" + Environment.NewLine +
                                 "Profile Page = @{Homepage}/Profiles/@{User Alias}"
-        Using stream As Stream = New MemoryStream(Encoding.ASCII.GetBytes(content))
-            file.Load(stream)
-        End Using
+        file.Load(New StringReader(content))
 
         ' Bind placeholders with user's data, external information.
         file.ValueBinding.Bind(
