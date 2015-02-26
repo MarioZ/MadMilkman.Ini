@@ -1,5 +1,6 @@
 # Linguist overrides
 *.h linguist-language=cpp
+*.cs linguist-language=C#
 
 # Auto detect text files and perform LF normalization
 * text=auto
