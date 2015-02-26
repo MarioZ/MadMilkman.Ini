@@ -1,3 +1,5 @@
+[1.0.3.3]  Added support for serialization and deserialization.
+           Added support for string array indexer in IniItemCollection.
 [1.0.3.2]  Added support for customizing binding operations via Binding event.
 [1.0.3.1]  Added support for reducing INI file via compression and decompression.
            Added support for protecting INI file via encryption and decryption.

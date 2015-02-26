@@ -189,6 +189,22 @@ namespace MadMilkman.Ini
         }
 
         /// <summary>
+        /// Gets the first items of the specified names.
+        /// </summary>
+        /// <param name="names">Names of the items to get.</param>
+        /// <remarks>If item with any specified name doesn't exist a <see langword="null"/> value is returned in its place.</remarks>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1043:UseIntegralOrStringArgumentForIndexers",
+         Justification = "I believe that this non-standard indexer can provide some useful data store access.")]
+        public IEnumerable<T> this[params string[] names]
+        {
+            get
+            {
+                foreach (var name in names)
+                    yield return this[name];
+            }
+        }
+
+        /// <summary>
         /// Returns an enumerator that iterates through the collection.
         /// </summary>
         /// <returns><see cref="IEnumerator{T}"/> object that can be used to iterate through the collection.</returns>

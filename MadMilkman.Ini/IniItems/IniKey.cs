@@ -26,6 +26,29 @@ namespace MadMilkman.Ini
         /// </summary>
         public IniSection ParentSection { get { return (IniSection)((this.ParentCollectionCore != null) ? this.ParentCollection.Owner : null); } }
 
+        internal bool IsValueArray
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(this.Value) && this.Value[0] == '{' && this.Value[this.Value.Length - 1] == '}';
+            }
+        }
+
+        internal string[] Values
+        {
+            get
+            {
+                var values = this.Value.Substring(1, this.Value.Length - 2).Split(',');
+                for (int i = 0; i < values.Length; i++)
+                    values[i] = values[i].Trim();
+                return values;
+            }
+            set
+            {
+                this.Value = "{" + string.Join(",", value) + "}";
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="IniKey"/> class.
         /// </summary>
@@ -95,6 +118,7 @@ namespace MadMilkman.Ini
         /// <item><description>System.DateTime</description></item>
         /// <item><description>System.TimeSpan</description></item>
         /// <item><description>System.Enum</description></item>
+        /// <item><description>System.String</description></item>
         /// </list>
         /// Additionally both Array and List of the above types are supported.
         /// </remarks>
@@ -105,6 +129,7 @@ namespace MadMilkman.Ini
 
             return type.IsPrimitive ||
                    type.IsEnum ||
+                   type == typeof(String) ||
                    type == typeof(Decimal) ||
                    type == typeof(DateTime) ||
                    type == typeof(TimeSpan) ||
@@ -156,17 +181,15 @@ namespace MadMilkman.Ini
         /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
         public bool TryParseValue<T>(out List<T> results)
         {
-            if (!string.IsNullOrEmpty(this.Value) && this.Value[0] == '{' && this.Value[this.Value.Length - 1] == '}')
+            if (this.IsValueArray)
             {
                 var listResults = new List<T>();
-                foreach (var value in this.Value.Substring(1, this.Value.Length - 2).Split(','))
+                foreach (var value in this.Values)
                 {
-                    string trimedValue = value.Trim();
-
                     T result;
-                    if (this.ParentFile.HasValueMappings && this.ParentFile.ValueMappings.TryGetResult<T>(trimedValue, out result))
+                    if (this.ParentFile.HasValueMappings && this.ParentFile.ValueMappings.TryGetResult<T>(value, out result))
                         listResults.Add(result);
-                    else if (IniValueParser<T>.TryParse(trimedValue, out result))
+                    else if (IniValueParser<T>.TryParse(value, out result))
                         listResults.Add(result);
                     else
                     {

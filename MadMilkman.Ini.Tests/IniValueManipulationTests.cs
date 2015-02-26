@@ -178,6 +178,12 @@ namespace MadMilkman.Ini.Tests
                     new IniKey(file, "double value", "-∞"),
                     new IniKey(file, "double value", "NaN")));
 
+            file.Sections.Add(
+                new IniSection(file, "ARRAYS",
+                    new IniKey(file, "bool values", "{YES, ON, 1, TRUE}"),
+                    new IniKey(file, "bool values", "{NO, OFF, 0, FALSE}"),
+                    new IniKey(file, "double values", "{1.1, 10.1, 100.1, 1000.1, +∞}")));
+
             file.ValueMappings.Add("yes", true);
             file.ValueMappings.Add("on", true);
             file.ValueMappings.Add("1", true);
@@ -195,7 +201,6 @@ namespace MadMilkman.Ini.Tests
                 Assert.IsTrue(key.TryParseValue(out booleanResult));
                 Assert.IsTrue(booleanResult);
             }
-
             foreach (var key in file.Sections["FALSE BOOLEANS"].Keys)
             {
                 bool booleanResult;
@@ -210,6 +215,21 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual(double.NegativeInfinity, doubleResult);
             Assert.IsTrue(file.Sections["DOUBLES"].Keys[2].TryParseValue(out doubleResult));
             Assert.IsNaN(doubleResult);
+
+            bool[] booleansResult;
+            Assert.IsTrue(file.Sections["ARRAYS"].Keys[0].TryParseValue(out booleansResult));
+            foreach (var boolean in booleansResult)
+                Assert.IsTrue(boolean);
+            Assert.IsTrue(file.Sections["ARRAYS"].Keys[1].TryParseValue(out booleansResult));
+            foreach (var boolean in booleansResult)
+                Assert.IsFalse(boolean);
+            List<double> doublesResult;
+            Assert.IsTrue(file.Sections["ARRAYS"].Keys[2].TryParseValue(out doublesResult));
+            Assert.AreEqual(1.1, doublesResult[0]);
+            Assert.AreEqual(10.1, doublesResult[1]);
+            Assert.AreEqual(100.1, doublesResult[2]);
+            Assert.AreEqual(1000.1, doublesResult[3]);
+            Assert.AreEqual(double.PositiveInfinity, doublesResult[4]);
         }
 
         [Test]

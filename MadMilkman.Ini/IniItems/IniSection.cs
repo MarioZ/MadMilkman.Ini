@@ -105,6 +105,26 @@ namespace MadMilkman.Ini
         /// <returns>Copied <see cref="IniSection"/> that belongs to a specified <see cref="IniFile"/>.</returns>
         /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#copying" target="_self">IniItem's Copying</seealso>
         public IniSection Copy(IniFile destinationFile) { return new IniSection(destinationFile, this); }
+        
+        /// <summary>
+        /// Serializes the specified object into this <see cref="IniSection"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of serialized object.</typeparam>
+        /// <param name="source">The object to serialize.</param>
+        public void Serialize<T>(T source) where T : class, new()
+        {
+            IniSerializer.Serialize(source, this);
+        }
+
+        /// <summary>
+        /// Deserializes this <see cref="IniSection"/> into an object of specified type.
+        /// </summary>
+        /// <typeparam name="T">The type of deserialized object.</typeparam>
+        /// <returns>The object being deserialized.</returns>
+        public T Deserialize<T>() where T : class, new()
+        {
+            return IniSerializer.Deserialize<T>(this);
+        }
 
         private static IEnumerable<IniKey> GetIniKeysFromKeyValuePairs(IniFile parentFile, IEnumerable<KeyValuePair<string, string>> nameValuePairs)
         {

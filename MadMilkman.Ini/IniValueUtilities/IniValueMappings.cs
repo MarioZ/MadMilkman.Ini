@@ -15,15 +15,12 @@ namespace MadMilkman.Ini
     /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#parsing" target="_self">IniKey's Value Parsing</seealso>
     public sealed class IniValueMappings
     {
-        private readonly IDictionary<string, object> mappings;
         [DebuggerBrowsable(DebuggerBrowsableState.Never)]
-        private readonly Predicate<Type> mappedTypeVerifier;
+        private static readonly Predicate<Type> MappedTypeVerifier = IniKey.IsSupportedValueType;
 
-        internal IniValueMappings(Predicate<Type> mappedTypeVerifier)
-        {
-            this.mappings = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-            this.mappedTypeVerifier = mappedTypeVerifier;
-        }
+        private readonly IDictionary<string, object> mappings;
+
+        internal IniValueMappings() { this.mappings = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase); }
 
         /// <summary>
         /// Adds a new mapping of <see cref="IniKey.Value"/> to resulting object of parse methods.
@@ -41,7 +38,7 @@ namespace MadMilkman.Ini
             if (value == null)
                 throw new ArgumentNullException("value");
 
-            if (this.Contains(value) || !mappedTypeVerifier(typeof(T)))
+            if (this.Contains(value) || !IniValueMappings.MappedTypeVerifier(typeof(T)))
                 throw new InvalidOperationException();
 
             this.mappings.Add(value, mappedResult);

@@ -65,6 +65,8 @@
     <Compile Include="IniReaderWriter\IniEncryptor.cs" />
     <Compile Include="IniReaderWriter\IniReader.cs" />
     <Compile Include="IniReaderWriter\IniWriter.cs" />
+    <Compile Include="IniSerializationAttribute.cs" />
+    <Compile Include="IniSerializer.cs" />
     <Compile Include="IniValueUtilities\IniValueBinding.cs" />
     <Compile Include="IniValueUtilities\IniValueBindingEventArgs.cs" />
     <Compile Include="IniValueUtilities\IniValueMappings.cs" />

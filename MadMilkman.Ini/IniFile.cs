@@ -57,7 +57,7 @@ namespace MadMilkman.Ini
             get
             {
                 if (this.valueMappings == null)
-                    this.valueMappings = new IniValueMappings(IniKey.IsSupportedValueType);
+                    this.valueMappings = new IniValueMappings();
                 return this.valueMappings;
             }
         }
