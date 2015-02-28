@@ -31,7 +31,7 @@ namespace MadMilkman.Ini
                     case TypeCode.Decimal: SetParser<decimal>(decimal.TryParse); break;
                     case TypeCode.Char: SetParser<char>(char.TryParse); break;
                     case TypeCode.DateTime: SetParser<DateTime>(DateTime.TryParse); break;
-                    case TypeCode.String: SetParser<string>(StringTryParse); break;
+                    case TypeCode.String: SetParser<string>((string value, out string result) => { result = value; return true; }); break;
                 }
         }
 
@@ -54,12 +54,6 @@ namespace MadMilkman.Ini
 
             result = default(TEnum);
             return false;
-        }
-
-        private static bool StringTryParse(string value, out string result)
-        {
-            result = value;
-            return true;
         }
 
         public static bool TryParse(string value, out T result)

@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Reflection;
 
 namespace MadMilkman.Ini
@@ -61,6 +60,9 @@ namespace MadMilkman.Ini
         private static void SetKeyValue(PropertyInfo property, object source, IniKey key)
         {
             object propertyValue = property.GetValue(source, null);
+
+            if (propertyValue == null)
+                return;
 
             if (property.PropertyType.IsArray || property.PropertyType.GetInterface(typeof(IList).Name) != null)
             {

@@ -111,20 +111,16 @@ namespace MadMilkman.Ini
         /// </summary>
         /// <typeparam name="T">The type of serialized object.</typeparam>
         /// <param name="source">The object to serialize.</param>
-        public void Serialize<T>(T source) where T : class, new()
-        {
-            IniSerializer.Serialize(source, this);
-        }
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#serializing" target="_self">IniSection's Object Serialization</seealso>
+        public void Serialize<T>(T source) where T : class, new() { IniSerializer.Serialize(source, this); }
 
         /// <summary>
         /// Deserializes this <see cref="IniSection"/> into an object of specified type.
         /// </summary>
         /// <typeparam name="T">The type of deserialized object.</typeparam>
         /// <returns>The object being deserialized.</returns>
-        public T Deserialize<T>() where T : class, new()
-        {
-            return IniSerializer.Deserialize<T>(this);
-        }
+        /// <seealso href="c49dc3a5-866f-4d2d-8f89-db303aceb5fe.htm#serializing" target="_self">IniSection's Object Serialization</seealso>
+        public T Deserialize<T>() where T : class, new() { return IniSerializer.Deserialize<T>(this); }
 
         private static IEnumerable<IniKey> GetIniKeysFromKeyValuePairs(IniFile parentFile, IEnumerable<KeyValuePair<string, string>> nameValuePairs)
         {

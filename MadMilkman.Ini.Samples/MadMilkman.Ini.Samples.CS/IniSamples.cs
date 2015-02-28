@@ -136,10 +136,10 @@ namespace MadMilkman.Ini.Samples.CS
         private static void Encrypt()
         {
             // Enable file's protection by providing an encryption password.
-            var options = new IniOptions() { EncryptionPassword = "M4dM1lkM4n.1n1" };
-            var file = new IniFile(options);
+            IniOptions options = new IniOptions() { EncryptionPassword = "M4dM1lkM4n.1n1" };
+            IniFile file = new IniFile(options);
 
-            var section = file.Sections.Add("User's Account");
+            IniSection section = file.Sections.Add("User's Account");
             section.Keys.Add("Username", "John Doe");
             section.Keys.Add("Password", @"P@55\/\/0|2D");
 
@@ -158,8 +158,8 @@ namespace MadMilkman.Ini.Samples.CS
         private static void Compress()
         {
             // Enable file's size reduction.
-            var options = new IniOptions() { Compression = true };
-            var file = new IniFile(options);
+            IniOptions options = new IniOptions() { Compression = true };
+            IniFile file = new IniFile(options);
 
             for (int i = 1; i <= 100; i++)
                 file.Sections.Add("Section " + i).Keys.Add("Key " + i, "Value " + i);
@@ -310,7 +310,7 @@ namespace MadMilkman.Ini.Samples.CS
             string userProfilePage = file.Sections["User's Settings"].Keys["Profile Page"].Value;
         }
 
-        private static void BindCustomization()
+        private static void BindCustomize()
         {
             IniFile file = new IniFile();
             string content = "[Player]" + Environment.NewLine +
@@ -318,7 +318,6 @@ namespace MadMilkman.Ini.Samples.CS
                              "Surname = @{Surname}" + Environment.NewLine +
                              "Adult = @{Age}" + Environment.NewLine +
                              "Medal = @{Rank}";
-
             file.Load(new StringReader(content));
 
             // Customize binding operation.
@@ -378,6 +377,51 @@ namespace MadMilkman.Ini.Samples.CS
                 });
         }
 
+        // Custom type used for serialization sample.
+        private class GameCharacter
+        {
+            public string Name { get; set; }
+
+            // Serialize this property as a key with "Sword" name.
+            [IniSerialization("Sword")]
+            public double Attack { get; set; }
+
+            // Serialize this property as a key with "Shield" name.
+            [IniSerialization("Shield")]
+            public double Defence { get; set; }
+
+            // Ignore serializing this property.
+            [IniSerialization(true)]
+            public double Health { get; set; }
+
+            public GameCharacter() { this.Health = 100; }
+        }
+
+        private static void Serialize()
+        {
+            IniFile file = new IniFile();
+            IniSection section = file.Sections.Add("User's Character");
+
+            GameCharacter character = new GameCharacter();
+            character.Name = "John";
+            character.Attack = 5.5;
+            character.Defence = 1;
+            character.Health = 75;
+
+            // Serialize GameCharacter object into section's keys.
+            section.Serialize(character);
+
+            // Deserialize section into GameCharacter object.
+            GameCharacter savedCharacter = section.Deserialize<GameCharacter>();
+
+            Console.WriteLine(section.Keys["Name"].Value);
+            Console.WriteLine(savedCharacter.Name);
+            Console.WriteLine(section.Keys["Sword"].Value);
+            Console.WriteLine(savedCharacter.Attack);
+            Console.WriteLine(section.Keys["Shield"].Value);
+            Console.WriteLine(savedCharacter.Defence);
+        }
+
         static void Main()
         {
             HelloWorld();
@@ -404,7 +448,9 @@ namespace MadMilkman.Ini.Samples.CS
 
             BindExternal();
 
-            BindCustomization();
+            BindCustomize();
+
+            Serialize();
         }
     }
 }

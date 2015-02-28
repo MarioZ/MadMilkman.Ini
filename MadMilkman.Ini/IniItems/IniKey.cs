@@ -30,7 +30,9 @@ namespace MadMilkman.Ini
         {
             get
             {
-                return !string.IsNullOrEmpty(this.Value) && this.Value[0] == '{' && this.Value[this.Value.Length - 1] == '}';
+                return !string.IsNullOrEmpty(this.Value) &&
+                       this.Value[0] == '{' &&
+                       this.Value[this.Value.Length - 1] == '}';
             }
         }
 

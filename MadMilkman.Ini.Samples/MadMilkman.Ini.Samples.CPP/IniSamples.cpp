@@ -5,7 +5,6 @@ using namespace System::Text;
 using namespace System::Collections::Generic;
 using namespace MadMilkman::Ini;
 
-
 void HelloWorld()
 {
 	// Create new file.
@@ -131,6 +130,52 @@ void Save()
 	String^ iniContent = contentWriter->ToString();
 
 	Console::WriteLine(iniContent);
+}
+
+void Encrypt()
+{
+	// Enable file's protection by providing an encryption password.
+	IniOptions^ options = gcnew IniOptions();
+	options->EncryptionPassword = "M4dM1lkM4n.1n1";
+	IniFile^ file = gcnew IniFile(options);
+
+	IniSection^ section = file->Sections->Add("User's Account");
+	section->Keys->Add("Username", "John Doe");
+	section->Keys->Add("Password", "P@55\\/\\/0|2D");
+
+	// Save and encrypt the file.
+	file->Save("..\\MadMilkman.Ini.Samples.Files\\Encrypt Example.ini");
+
+	file->Sections->Clear();
+
+	// Load and dencrypt the file.
+	file->Load("..\\MadMilkman.Ini.Samples.Files\\Encrypt Example.ini");
+
+	Console::WriteLine("User Name: {0}", file->Sections[0]->Keys["Username"]->Value);
+	Console::WriteLine("Password: {0}", file->Sections[0]->Keys["Password"]->Value);
+}
+
+void Compress()
+{
+	// Enable file's size reduction.
+	IniOptions^ options = gcnew IniOptions();
+	options->Compression = true;
+	IniFile^ file = gcnew IniFile(options);
+
+	for (int i = 1; i <= 100; i++)
+	{
+	    file->Sections->Add("Section " + i)->Keys->Add("Key " + i, "Value " + i);
+	}
+
+	// Save and compress the file.
+	file->Save("..\\MadMilkman.Ini.Samples.Files\\Compress Example.ini");
+
+	file->Sections->Clear();
+
+	// Load and decompress the file.
+	file->Load("..\\MadMilkman.Ini.Samples.Files\\Compress Example.ini");
+
+	Console::WriteLine(file->Sections->Count);
 }
 
 void Custom()
@@ -263,6 +308,128 @@ void BindExternal()
 	String^ userProfilePage = file->Sections["User's Settings"]->Keys["Profile Page"]->Value;
 }
 
+private ref class BindingCustomizationSample {
+public:
+	void BindCustomize()
+	{
+		IniFile^ file = gcnew IniFile();
+		String^ content = "[Player]" + Environment::NewLine +
+						  "Name = @{Name}" + Environment::NewLine +
+						  "Surname = @{Surname}" + Environment::NewLine +
+						  "Adult = @{Age}" + Environment::NewLine +
+						  "Medal = @{Rank}";
+		file->Load(gcnew StringReader(content));
+
+		// Customize binding operation.
+		file->ValueBinding->Binding += gcnew EventHandler<IniValueBindingEventArgs^>(this, &BindingCustomizationSample::CustomEventHandler);
+
+		// Execute binding operation.
+		Dictionary<String^, String^>^ dataSource = gcnew Dictionary<String^, String^>();
+		dataSource->Add("Name", "John");
+		dataSource->Add("Age", "20");
+		dataSource->Add("Rank", "1");
+		file->ValueBinding->Bind(dataSource);
+	}
+
+	void CustomEventHandler(Object^ sender, IniValueBindingEventArgs^ e)
+	{
+		if (!e->IsValueFound)
+		{
+			e->Value = "UNKNOWN";
+			return;
+		}
+		if (e->PlaceholderKey->Name->Equals("Adult") && e->PlaceholderName->Equals("Age"))
+		{
+			int age;
+			if (int::TryParse(e->Value, age))
+			{
+				e->Value = (age >= 18) ? "YES" : "NO";
+			}
+			else
+			{
+				e->Value = "UNKNOWN";
+			}
+			return;
+		}
+		if (e->PlaceholderKey->Name->Equals("Medal") && e->PlaceholderName->Equals("Rank"))
+		{
+			int rank;
+			if (int::TryParse(e->Value, rank))
+			{
+				switch (rank)
+				{
+					case 1:
+						e->Value = "GOLD";
+						break;
+					case 2:
+						e->Value = "SILVER";
+						break;
+					case 3:
+						e->Value = "BRONCE";
+						break;
+					default:
+						e->Value = "NONE";
+						break;
+				}
+			}
+			else
+			{
+				e->Value = "UNKNOWN";
+			}
+		return;
+		}
+	}
+};
+
+// Custom type used for serialization sample.
+private ref class GameCharacter
+{
+public:
+	property String^ Name;
+
+	// Serialize this property as a key with "Sword" name.
+	[IniSerialization("Sword")]
+	property double Attack;
+
+	// Serialize this property as a key with "Shield" name.
+	[IniSerialization("Shield")]
+	property double Defence;
+
+	// Ignore serializing this property.
+	[IniSerialization(true)]
+	property double Health;
+
+	GameCharacter()
+	{
+		this->Health = 100;
+	}
+};
+
+void Serialize()
+{
+	IniFile^ file = gcnew IniFile();
+	IniSection^ section = file->Sections->Add("User's Character");
+
+	GameCharacter^ character = gcnew GameCharacter();
+	character->Name = "John";
+	character->Attack = 5.5;
+	character->Defence = 1;
+	character->Health = 75;
+
+	// Serialize GameCharacter object into section's keys.
+	section->Serialize(character);
+
+	// Deserialize section into GameCharacter object.
+	GameCharacter^ savedCharacter = section->Deserialize<GameCharacter^>();
+
+	Console::WriteLine(section->Keys["Name"]->Value);
+	Console::WriteLine(savedCharacter->Name);
+	Console::WriteLine(section->Keys["Sword"]->Value);
+	Console::WriteLine(savedCharacter->Attack);
+	Console::WriteLine(section->Keys["Shield"]->Value);
+	Console::WriteLine(savedCharacter->Defence);
+}
+
 void main()
 {
 	HelloWorld();
@@ -275,6 +442,10 @@ void main()
 
 	Save();
 
+	Encrypt();
+
+	Compress();
+
 	Custom();
 
 	Copy();
@@ -284,4 +455,9 @@ void main()
 	BindInternal();
 
 	BindExternal();
+
+	BindingCustomizationSample^ sample = gcnew BindingCustomizationSample();
+	sample->BindCustomize();
+
+	Serialize();
 }

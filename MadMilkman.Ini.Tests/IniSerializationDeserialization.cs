@@ -42,6 +42,7 @@ namespace MadMilkman.Ini.Tests
             Assert.IsNull(deserializedClass.FirstSampleProperty);
             Assert.AreEqual(serializedClass.SecondSampleProperty, deserializedClass.SecondSampleProperty);
             Assert.AreEqual(serializedClass.ThirdSampleProperty, deserializedClass.ThirdSampleProperty);
+            Assert.AreEqual(serializedClass.FourthSampleProperty, deserializedClass.FourthSampleProperty);
         }
 
         private class SampleClass
@@ -107,6 +108,7 @@ namespace MadMilkman.Ini.Tests
             public string SecondSampleProperty { get; set; }
             [IniSerialization("3. Sample Property")]
             public string ThirdSampleProperty { get; set; }
+            public string FourthSampleProperty { get; set; }
 
             public void Initialize()
             {

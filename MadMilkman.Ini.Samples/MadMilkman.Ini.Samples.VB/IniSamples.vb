@@ -127,6 +127,47 @@ Module IniSamples
         Console.WriteLine(iniContent)
     End Sub
 
+    Private Sub Encrypt()
+        ' Enable file's protection by providing an encryption password.
+        Dim options As IniOptions = New IniOptions() With {.EncryptionPassword = "M4dM1lkM4n.1n1"}
+        Dim file As IniFile = New IniFile(options)
+
+        Dim section As IniSection = file.Sections.Add("User's Account")
+        section.Keys.Add("Username", "John Doe")
+        section.Keys.Add("Password", "P@55\/\/0|2D")
+
+        ' Save and encrypt the file.
+        file.Save("..\..\..\MadMilkman.Ini.Samples.Files\Encrypt Example.ini")
+
+        file.Sections.Clear()
+
+        ' Load and dencrypt the file.
+        file.Load("..\..\..\MadMilkman.Ini.Samples.Files\Encrypt Example.ini")
+
+        Console.WriteLine("User Name: {0}", file.Sections(0).Keys("Username").Value)
+        Console.WriteLine("Password: {0}", file.Sections(0).Keys("Password").Value)
+    End Sub
+
+    Private Sub Compress()
+        ' Enable file's size reduction.
+        Dim options As IniOptions = New IniOptions() With {.Compression = True}
+        Dim file = New IniFile(options)
+
+        For i As Integer = 1 To 100
+            file.Sections.Add("Section " + i.ToString()).Keys.Add("Key " + i.ToString(), "Value " + i.ToString())
+        Next
+
+        ' Save and compress the file.
+        file.Save("..\..\..\MadMilkman.Ini.Samples.Files\Compress Example.ini")
+
+        file.Sections.Clear()
+
+        ' Load and decompress the file.
+        file.Load("..\..\..\MadMilkman.Ini.Samples.Files\Compress Example.ini")
+
+        Console.WriteLine(file.Sections.Count)
+    End Sub
+
     Private Sub Custom()
         ' Create new file with custom formatting.
         Dim file As New IniFile(
@@ -256,6 +297,145 @@ Module IniSamples
         Dim userProfilePage As String = file.Sections("User's Settings").Keys("Profile Page").Value
     End Sub
 
+    Private Sub BindCustomize()
+        Dim file As New IniFile()
+        Dim content As String = "[Player]" + Environment.NewLine +
+                                "Name = @{Name}" + Environment.NewLine +
+                                "Surname = @{Surname}" + Environment.NewLine +
+                                "Adult = @{Age}" + Environment.NewLine +
+                                "Medal = @{Rank}"
+        file.Load(New StringReader(content))
+
+        ' Customize binding operation.
+        AddHandler file.ValueBinding.Binding,
+            Sub(sender, e)
+                ' Set placeholders that do not have a value in data source to 'UNKNOWN'.
+                If Not e.IsValueFound Then
+                    e.Value = "UNKNOWN"
+                    Return
+                End If
+
+                ' Set 'Age' placeholder inside 'Adult' key to an appropriate value.
+                If e.PlaceholderKey.Name.Equals("Adult") AndAlso e.PlaceholderName.Equals("Age") Then
+                    Dim age As Integer
+                    If Integer.TryParse(e.Value, age) Then
+                        e.Value = If((age >= 18), "YES", "NO")
+                    Else
+                        e.Value = "UNKNOWN"
+                    End If
+                    Return
+                End If
+
+                ' Set 'Rank' placeholder inside 'Medal' key to an appropriate value.
+                If e.PlaceholderKey.Name.Equals("Medal") AndAlso e.PlaceholderName.Equals("Rank") Then
+                    Dim rank As Integer
+                    If Integer.TryParse(e.Value, rank) Then
+                        Select Case rank
+                            Case 1
+                                e.Value = "GOLD"
+                                Exit Select
+                            Case 2
+                                e.Value = "SILVER"
+                                Exit Select
+                            Case 3
+                                e.Value = "BRONCE"
+                                Exit Select
+                            Case Else
+                                e.Value = "NONE"
+                                Exit Select
+                        End Select
+                    Else
+                        e.Value = "UNKNOWN"
+                    End If
+                    Return
+                End If
+            End Sub
+
+        ' Execute binding operation.
+        file.ValueBinding.Bind(New Dictionary(Of String, String)() From {
+            {"Name", "John"},
+            {"Age", "20"},
+            {"Rank", "1"}
+        })
+    End Sub
+
+    ' Custom type used for serialization sample.
+    Private Class GameCharacter
+        Public Property Name() As String
+            Get
+                Return m_Name
+            End Get
+            Set(value As String)
+                m_Name = Value
+            End Set
+        End Property
+        Private m_Name As String
+
+        ' Serialize this property as a key with "Sword" name.
+        <IniSerialization("Sword")>
+        Public Property Attack() As Double
+            Get
+                Return m_Attack
+            End Get
+            Set(value As Double)
+                m_Attack = value
+            End Set
+        End Property
+        Private m_Attack As Double
+
+        ' Serialize this property as a key with "Shield" name.
+        <IniSerialization("Shield")>
+        Public Property Defence() As Double
+            Get
+                Return m_Defence
+            End Get
+            Set(value As Double)
+                m_Defence = value
+            End Set
+        End Property
+        Private m_Defence As Double
+
+        ' Ignore serializing this property.
+        <IniSerialization(True)>
+        Public Property Health() As Double
+            Get
+                Return m_Health
+            End Get
+            Set(value As Double)
+                m_Health = value
+            End Set
+        End Property
+        Private m_Health As Double
+
+        Public Sub New()
+            Me.Health = 100
+        End Sub
+    End Class
+
+    Private Sub Serialize()
+        Dim file As New IniFile()
+        Dim section As IniSection = file.Sections.Add("User's Character")
+
+        Dim character As New GameCharacter()
+        character.Name = "John"
+        character.Attack = 5.5
+        character.Defence = 1
+        character.Health = 75
+
+        ' Serialize GameCharacter object into section's keys.
+        section.Serialize(character)
+
+        ' Deserialize section into GameCharacter object.
+        Dim savedCharacter As GameCharacter = section.Deserialize(Of GameCharacter)()
+
+        Console.WriteLine(section.Keys("Name").Value)
+        Console.WriteLine(savedCharacter.Name)
+        Console.WriteLine(section.Keys("Sword").Value)
+        Console.WriteLine(savedCharacter.Attack)
+        Console.WriteLine(section.Keys("Shield").Value)
+        Console.WriteLine(savedCharacter.Defence)
+    End Sub
+
     Sub Main()
         HelloWorld()
 
@@ -267,6 +447,10 @@ Module IniSamples
 
         Save()
 
+        Encrypt()
+
+        Compress()
+
         Custom()
 
         Copy()
@@ -276,6 +460,10 @@ Module IniSamples
         BindInternal()
 
         BindExternal()
+
+        BindCustomize()
+
+        Serialize()
     End Sub
 
 End Module
