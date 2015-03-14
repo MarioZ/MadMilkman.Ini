@@ -199,8 +199,29 @@ namespace MadMilkman.Ini
         {
             get
             {
-                foreach (var name in names)
-                    yield return this[name];
+                var returnedNames = new Dictionary<string, int>();
+                int index;
+
+                for (int i = 0; i < names.Length; i++)
+                {
+                    string name = names[i];
+
+                    if (returnedNames.TryGetValue(name, out index))
+                    {
+                        if (index != -1)
+                        {
+                            index = GetItemIndexByName(name, index + 1);
+                            returnedNames[name] = index;
+                        }
+                    }
+                    else
+                    {
+                        index = GetItemIndexByName(name);
+                        returnedNames.Add(name, index);
+                    }
+
+                    yield return (index != -1) ? this.items[index] : null;
+                }
             }
         }
 
@@ -210,14 +231,15 @@ namespace MadMilkman.Ini
         /// <returns><see cref="IEnumerator{T}"/> object that can be used to iterate through the collection.</returns>
         public IEnumerator<T> GetEnumerator() { return this.items.GetEnumerator(); }
 
-        private int GetItemIndexByName(string name)
+        private int GetItemIndexByName(string name, int startIndex = 0)
         {
             var iniItems = (IEnumerable<IniItem>)this.items;
             int index = 0;
 
             foreach (var item in iniItems)
             {
-                if (item.Name.Equals(name, (this.caseSensitive) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
+                if (index >= startIndex &&
+                    item.Name.Equals(name, (this.caseSensitive) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
                     return index;
                 else
                     index++;

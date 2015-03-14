@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace MadMilkman.Ini.Tests
 {
     [TestFixture]
-    public class IniSerializationDeserialization
+    public class IniSerializationDeserializationTests
     {
         [Test]
         public void SerializeDeserializeTest()
@@ -36,13 +36,18 @@ namespace MadMilkman.Ini.Tests
             Assert.IsNull(section.Keys["FirstSampleProperty"]);
             Assert.IsNotNull(section.Keys["SecondSampleProperty"]);
             Assert.IsNotNull(section.Keys["3. Sample Property"]);
+            Assert.IsNotNull(section.Keys["FourthSampleProperty"]);
 
             var deserializedClass = section.Deserialize<SampleAttributedClass>();
             Assert.AreNotEqual(serializedClass.FirstSampleProperty, deserializedClass.FirstSampleProperty);
             Assert.IsNull(deserializedClass.FirstSampleProperty);
             Assert.AreEqual(serializedClass.SecondSampleProperty, deserializedClass.SecondSampleProperty);
             Assert.AreEqual(serializedClass.ThirdSampleProperty, deserializedClass.ThirdSampleProperty);
-            Assert.AreEqual(serializedClass.FourthSampleProperty, deserializedClass.FourthSampleProperty);
+            Assert.IsTrue(
+                // null
+                string.IsNullOrEmpty(serializedClass.FourthSampleProperty) &&
+                // string.Empty
+                string.IsNullOrEmpty(deserializedClass.FourthSampleProperty));
         }
 
         private class SampleClass

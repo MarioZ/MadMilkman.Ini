@@ -297,5 +297,103 @@ namespace MadMilkman.Ini.Tests
 
             file.Sections[0].Keys.Add(key);
         }
+
+        public void UpdateArrayIndexerTest()
+        {
+            var file = new IniFile();
+            file.Sections.Add(
+                new IniSection(file, "SECTION 0",
+                    new IniKey(file, "UNKNOWN"),
+                    new IniKey(file, "KEY 1"),
+                    new IniKey(file, "KEY 2"),
+                    new IniKey(file, "UNKNOWN")));
+
+            file.Sections.Add(new IniSection(file, "UNKNOWN"));
+            file.Sections.Add(new IniSection(file, "SEC 2"));
+            file.Sections.Add(new IniSection(file, "UNKNOWN"));
+
+            bool isOneKeyNull = false;
+            foreach (var key in file.Sections[0].Keys["UNKNOWN", "UNKNOWN", "UNKNOWN", "KEY 2", "KEY 1"])
+            {
+                if (key == null)
+                {
+                    if (isOneKeyNull) Assert.Fail();
+                    isOneKeyNull = true;
+                }
+                else
+                    key.Value = "VALUE " + key.ParentCollection.IndexOf(key);
+            }
+
+            if (!isOneKeyNull) Assert.Fail();
+            for (int i = 0; i < file.Sections[0].Keys.Count; i++)
+                Assert.AreEqual("VALUE " + i, file.Sections[0].Keys[i].Value);
+
+            bool isOneSectionRenamed = false;
+            foreach (var section in file.Sections["UNKNOWN", "UNKNOWN", "SEC 2", "SECTION 2"])
+            {
+                string newSectionName = "SECTION " + section.ParentCollection.IndexOf(section);
+
+                if (section.Name == newSectionName)
+                {
+                    if (isOneSectionRenamed) Assert.Fail();
+                    isOneSectionRenamed = true;
+                }
+                else
+                    section.Name = "SECTION " + section.ParentCollection.IndexOf(section);
+            }
+
+            if (!isOneSectionRenamed) Assert.Fail();
+            for (int i = 0; i < file.Sections.Count; i++)
+                Assert.AreEqual("SECTION " + i, file.Sections[i].Name);
+
+            var order = new IniSection(file, "ORDER",
+                            new IniKey(file, "A"),
+                            new IniKey(file, "B"),
+                            new IniKey(file, "C"),
+                            new IniKey(file, "A"),
+                            new IniKey(file, "B"),
+                            new IniKey(file, "C"));
+            file.Sections.Add(order);
+
+            int returnedIndex = 0;
+            foreach (var key in order.Keys["A", "A", "B", "B", "C", "C"])
+                key.Value = (returnedIndex++).ToString();
+
+            Assert.AreEqual("0", order.Keys[0].Value);
+            Assert.AreEqual("1", order.Keys[3].Value);
+            Assert.AreEqual("2", order.Keys[1].Value);
+            Assert.AreEqual("3", order.Keys[4].Value);
+            Assert.AreEqual("4", order.Keys[2].Value);
+            Assert.AreEqual("5", order.Keys[5].Value);
+        }
+
+        [Test]
+        public void IniItemParentsTest()
+        {
+            var file = new IniFile();
+            var section = new IniSection(file, "Section");
+            var key = new IniKey(file, "Key");
+
+            Assert.AreSame(file, section.ParentFile);
+            Assert.AreSame(file, key.ParentFile);
+
+            Assert.IsNull(section.ParentCollection);
+            Assert.IsNull(key.ParentCollection);
+            Assert.IsNull(key.ParentSection);
+
+            section.Keys.Add(key);
+            Assert.AreSame(section.Keys, key.ParentCollection);
+            Assert.AreSame(section, key.ParentSection);
+
+            file.Sections.Add(section);
+            Assert.AreSame(file.Sections, section.ParentCollection);
+
+            file.Sections.Remove(section);
+            Assert.IsNull(section.ParentCollection);
+
+            section.Keys.Remove(key);
+            Assert.IsNull(key.ParentCollection);
+            Assert.IsNull(key.ParentSection);
+        }
     }
 }

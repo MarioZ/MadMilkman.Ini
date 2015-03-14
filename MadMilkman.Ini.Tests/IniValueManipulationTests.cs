@@ -8,35 +8,6 @@ namespace MadMilkman.Ini.Tests
     public class IniValueManipulationTests
     {
         [Test]
-        public void IniItemParentsTest()
-        {
-            var file = new IniFile();
-            var section = new IniSection(file, "Section");
-            var key = new IniKey(file, "Key");
-
-            Assert.AreSame(file, section.ParentFile);
-            Assert.AreSame(file, key.ParentFile);
-
-            Assert.IsNull(section.ParentCollection);
-            Assert.IsNull(key.ParentCollection);
-            Assert.IsNull(key.ParentSection);
-
-            section.Keys.Add(key);
-            Assert.AreSame(section.Keys, key.ParentCollection);
-            Assert.AreSame(section, key.ParentSection);
-
-            file.Sections.Add(section);
-            Assert.AreSame(file.Sections, section.ParentCollection);
-
-            file.Sections.Remove(section);
-            Assert.IsNull(section.ParentCollection);
-
-            section.Keys.Remove(key);
-            Assert.IsNull(key.ParentCollection);
-            Assert.IsNull(key.ParentSection);
-        }
-
-        [Test]
         public void ParseValueTest()
         {
             var dateTime = new DateTime(9999, 12, 31, 23, 59, 59);

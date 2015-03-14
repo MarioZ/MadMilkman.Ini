@@ -51,7 +51,7 @@
   <ItemGroup>
     <Compile Include="IniFileCreateUpdateTests.cs" />
     <Compile Include="IniFileEncryptionCompressionTests.cs" />
-    <Compile Include="IniSerializationDeserialization.cs" />
+    <Compile Include="IniSerializationDeserializationTests.cs" />
     <Compile Include="IniValueManipulationTests.cs" />
     <Compile Include="IniFileWriteTests.cs" />
     <Compile Include="IniUtilities.cs" />

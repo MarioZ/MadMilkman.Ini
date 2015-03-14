@@ -1,3 +1,6 @@
+[1.0.4.1]  Fixed issue with SerializeDeserializeAttributeTest.
+           Improved string array indexer in IniItemCollection.
+
 [1.0.4.0]  NEW RELEASE
 [1.0.3.3]  Added support for serializing and deserializing objects into an INI content.
            Added support for string array indexer in IniItemCollection.
