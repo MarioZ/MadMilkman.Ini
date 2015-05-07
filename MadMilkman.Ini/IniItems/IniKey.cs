@@ -145,7 +145,7 @@ namespace MadMilkman.Ini
         /// <param name="result">Uninitialized instance of a specific type which will hold the converted value if the conversion succeeds.</param>
         /// <typeparam name="T">Type of the object to convert the <see cref="IniKey.Value"/> to.</typeparam>
         /// <returns>Value that indicates whether the conversion succeeded.</returns>
-        /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
+        /// <include file='IniInternal\SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
         public bool TryParseValue<T>(out T result)
         {
             if (this.ParentFile.HasValueMappings && this.ParentFile.ValueMappings.TryGetResult<T>(this.Value, out result))
@@ -160,7 +160,7 @@ namespace MadMilkman.Ini
         /// <param name="results">Uninitialized array of a specific type which will hold the converted values if the conversion succeeds.</param>
         /// <typeparam name="T">Type of the objects in array to convert the <see cref="IniKey.Value"/> to.</typeparam>
         /// <returns>Value that indicates whether the conversion succeeded.</returns>
-        /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
+        /// <include file='IniInternal\SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
         public bool TryParseValue<T>(out T[] results)
         {
             List<T> listResults;
@@ -180,7 +180,7 @@ namespace MadMilkman.Ini
         /// <param name="results">Uninitialized list of a specific type which will hold the converted values if the conversion succeeds.</param>
         /// <typeparam name="T">Type of the objects in list to convert the <see cref="IniKey.Value"/> to.</typeparam>
         /// <returns>Value that indicates whether the conversion succeeded.</returns>
-        /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
+        /// <include file='IniInternal\SharedDocumentationComments.xml' path='Comments/Comment[@name="TryParseValueSupport"]/*'/>
         public bool TryParseValue<T>(out List<T> results)
         {
             if (this.IsValueArray)

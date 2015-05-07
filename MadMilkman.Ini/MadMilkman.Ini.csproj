@@ -44,8 +44,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DebugCollectionViewer.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IniInternal\DebugCollectionViewer.cs" />
+    <Compile Include="IniInternal\GlobalSuppressions.cs" />
     <Compile Include="IniEnums\IniCommentStarter.cs" />
     <Compile Include="IniEnums\IniCommentType.cs" />
     <Compile Include="IniEnums\IniDuplication.cs" />
@@ -54,8 +54,8 @@
     <Compile Include="IniFile.cs" />
     <Compile Include="IniItemsCollection\IniItemCollection.cs" />
     <Compile Include="IniItemsCollection\IniKeyCollection.cs" />
-    <Compile Include="IniComment.cs" />
-    <Compile Include="IItemNameVerifier.cs" />
+    <Compile Include="IniItems\IniComment.cs" />
+    <Compile Include="IniInternal\IItemNameVerifier.cs" />
     <Compile Include="IniItems\IniItem.cs" />
     <Compile Include="IniItems\IniKey.cs" />
     <Compile Include="IniItems\IniSection.cs" />
@@ -65,12 +65,12 @@
     <Compile Include="IniReaderWriter\IniEncryptor.cs" />
     <Compile Include="IniReaderWriter\IniReader.cs" />
     <Compile Include="IniReaderWriter\IniWriter.cs" />
-    <Compile Include="IniSerializationAttribute.cs" />
-    <Compile Include="IniSerializer.cs" />
-    <Compile Include="IniValueUtilities\IniValueBinding.cs" />
-    <Compile Include="IniValueUtilities\IniValueBindingEventArgs.cs" />
-    <Compile Include="IniValueUtilities\IniValueMappings.cs" />
-    <Compile Include="IniValueUtilities\IniValueParser.cs" />
+    <Compile Include="IniUtilities\IniSerializationAttribute.cs" />
+    <Compile Include="IniUtilities\IniSerializer.cs" />
+    <Compile Include="IniUtilities\IniValueBinding.cs" />
+    <Compile Include="IniUtilities\IniValueBindingEventArgs.cs" />
+    <Compile Include="IniUtilities\IniValueMappings.cs" />
+    <Compile Include="IniUtilities\IniValueParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Properties\MadMilkman.Ini.png" />
-    <Content Include="SharedDocumentationComments.xml" />
+    <Content Include="IniInternal\SharedDocumentationComments.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

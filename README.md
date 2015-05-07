@@ -12,7 +12,7 @@ It is 100% managed code (C#), **compatible with Mono framework**, which provides
 
 ## Installation:
 You can use this component in any way that suits you:
-* As _private assembly_ by adding a DLL inside your project.
+* As _private assembly_ by adding [MadMilkman.Ini.dll](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.zip) inside your project.
 * As _shared assembly_ by installing [MadMilkman.Ini.Setup.msi](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.Setup.msi).
 * As _package_ via [NuGet](http://www.nuget.org/packages/MadMilkman.Ini):
 ```powershell
@@ -29,7 +29,8 @@ PM> Install-Package MadMilkman.Ini
 4. Write some INI files processing code.
   * Use code samples written in C#, VB and C++ as starting point.
   * Read [MadMilkman.Ini.Documentation.chm](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.Documentation.chm) to learn more about the component and its API references.
-    NOTE: If you are experiencing difficulties with viewing the CHM file's content after downloading it, right-click on CHM file, select "Properties" and under the "General" tab click "Unblock".
+> #### **NOTE:**
+> If you are experiencing difficulties with viewing the CHM file's content after downloading it, right-click on CHM file, select "Properties" and under the "General" tab click "Unblock".
 
 ## Feedback:
 Please feel free to contact me with any questions, suggestions or issues regarding the MadMilkman.Ini component, I will be more than happy to provide a help.

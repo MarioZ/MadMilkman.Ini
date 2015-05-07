@@ -50,7 +50,7 @@ namespace MadMilkman.Ini
         /// Adds an item to the end of this collection.
         /// </summary>
         /// <param name="item">Item to add to this collection.</param>
-        /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="AddIgnored"]/*'/>
+        /// <include file='IniInternal\SharedDocumentationComments.xml' path='Comments/Comment[@name="AddIgnored"]/*'/>
         public void Add(T item)
         {
             if (this.VerifyItem(item))
@@ -107,7 +107,7 @@ namespace MadMilkman.Ini
         /// </summary>
         /// <param name="index">Zero-based index at which item should be inserted.</param>
         /// <param name="item">Item to insert to this collection.</param>
-        /// <include file='SharedDocumentationComments.xml' path='Comments/Comment[@name="InsertIgnored"]/*'/>
+        /// <include file='IniInternal\SharedDocumentationComments.xml' path='Comments/Comment[@name="InsertIgnored"]/*'/>
         public void Insert(int index, T item)
         {
             if (this.VerifyItem(item))
