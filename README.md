@@ -45,7 +45,7 @@ MadMilkman.Ini provides a simple and intuitive programming interface which makes
 Key name = Key value ;Key leading comment
 ```
 
-### C#
+### C# #
 ```csharp
 // Create new file with a default formatting.
 IniFile file = new IniFile();
