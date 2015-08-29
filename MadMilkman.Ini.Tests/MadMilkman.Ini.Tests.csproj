@@ -49,6 +49,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BugFixes.cs" />
     <Compile Include="IniFileCreateUpdateTests.cs" />
     <Compile Include="IniFileEncryptionCompressionTests.cs" />
     <Compile Include="IniSerializationDeserializationTests.cs" />

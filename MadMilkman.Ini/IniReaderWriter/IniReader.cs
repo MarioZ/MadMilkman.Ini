@@ -87,12 +87,23 @@ namespace MadMilkman.Ini
 
         private void ReadSection(int leftIndention, string line, IniFile file)
         {
-            /* REMARKS:  First occurrence of section's end wrapper character (e.g. ']') defines section's name.
-             *           The rest of the text is processed as leading comment or ignored.
-             *          
-             * CONSIDER: Implement a support for section's name which contains end wrapper characters. */
+            /* MZ(2015-08-29): Added support for section names that may contain end wrapper or comment starter characters. */
+            int sectionEndIndex = -1, potentialCommentIndex, tempIndex = leftIndention;
+            while (tempIndex != -1 && ++tempIndex <= line.Length)
+            {
+                potentialCommentIndex = line.IndexOf((char)this.options.CommentStarter, tempIndex);
 
-            int sectionEndIndex = line.IndexOf(this.options.sectionWrapperEnd, leftIndention);
+                if (potentialCommentIndex != -1)
+                    sectionEndIndex = line.LastIndexOf(this.options.sectionWrapperEnd, potentialCommentIndex - 1, potentialCommentIndex - tempIndex);
+                else
+                    sectionEndIndex = line.LastIndexOf(this.options.sectionWrapperEnd, line.Length - 1, line.Length - tempIndex);
+
+                if (sectionEndIndex != -1)
+                    break;
+                else
+                    tempIndex = potentialCommentIndex;
+            }
+
             if (sectionEndIndex != -1)
             {
                 this.currentSection = new IniSection(file,

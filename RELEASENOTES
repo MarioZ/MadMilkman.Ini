@@ -1,3 +1,4 @@
+[1.0.4.3]  Added support for section names that may contain end wrapper or comment starter characters.
 [1.0.4.1]  Fixed issue with SerializeDeserializeAttributeTest.
            Improved string array indexer in IniItemCollection.
 

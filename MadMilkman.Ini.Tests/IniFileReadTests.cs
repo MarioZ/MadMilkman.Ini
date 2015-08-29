@@ -256,5 +256,31 @@ namespace MadMilkman.Ini.Tests
             Assert.IsEmpty(file.Sections[0].Keys[7].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[7].LeadingComment.LeftIndentation);
         }
+
+        [Test]
+        public void ReadSectionEdgeCasesTest()
+        {
+            string iniFileContent = "[" + Environment.NewLine +
+                                    "]" + Environment.NewLine +
+                                    "[]" + Environment.NewLine +
+                                    "[;]" + Environment.NewLine +
+                                    "[;;]" + Environment.NewLine +
+                                    "[[]]" + Environment.NewLine +
+                                    "[[]];" + Environment.NewLine +
+                                    "[[;]]" + Environment.NewLine +
+                                    "[[;]];";
+
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
+            Assert.AreEqual(7, file.Sections.Count);
+            Assert.AreEqual(string.Empty, file.Sections[0].Name);
+            Assert.AreEqual(";", file.Sections[1].Name);
+            Assert.AreEqual(";;", file.Sections[2].Name);
+            Assert.AreEqual("[]", file.Sections[3].Name);
+            Assert.AreEqual("[]", file.Sections[4].Name);
+            Assert.AreEqual(string.Empty, file.Sections[4].LeadingComment.Text);
+            Assert.AreEqual("[;]", file.Sections[5].Name);
+            Assert.AreEqual("[;]", file.Sections[6].Name);
+            Assert.AreEqual(string.Empty, file.Sections[6].LeadingComment.Text);
+        }
     }
 }
