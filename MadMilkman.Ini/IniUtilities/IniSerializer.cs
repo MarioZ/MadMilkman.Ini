@@ -68,8 +68,9 @@ namespace MadMilkman.Ini
             {
                 var values = new List<string>();
 
+                /* MZ(2016-01-02): Fixed issue with null items in array and list. */
                 foreach (var item in (IEnumerable)propertyValue)
-                    values.Add(item.ToString());
+                    values.Add(item != null ? item.ToString() : null);
 
                 key.Values = values.ToArray();
             }
@@ -81,8 +82,12 @@ namespace MadMilkman.Ini
         {
             var propertyType = property.PropertyType;
 
-            if (propertyType.IsArray && key.IsValueArray)
+            if (propertyType.IsArray)
             {
+                /* MZ(2016-01-02): Fixed issue with null array and list. */
+                if (!key.IsValueArray)
+                    return;
+
                 var values = key.Values;
                 var itemType = propertyType.GetElementType();
                 var array = Array.CreateInstance(itemType, values.Length);
@@ -95,14 +100,20 @@ namespace MadMilkman.Ini
                 property.SetValue(destination, array, null);
             }
 
-            else if (propertyType.GetInterface(typeof(IList).Name) != null && key.IsValueArray)
+            else if (propertyType.GetInterface(typeof(IList).Name) != null)
             {
+                /* MZ(2016-01-02): Fixed issue with null array and list. */
+                if (!key.IsValueArray)
+                    return;
+
                 var itemType = propertyType.GetGenericArguments()[0];
                 var list = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(itemType));
 
-                foreach (var value in key.Values)
-                    list.Add(
-                        TypeDescriptor.GetConverter(itemType).ConvertFromInvariantString(value));
+                var values = key.Values;
+                if (!(values.Length == 1 && string.IsNullOrEmpty(values[0])))
+                    foreach (var value in values)
+                        list.Add(
+                            TypeDescriptor.GetConverter(itemType).ConvertFromInvariantString(value));
 
                 property.SetValue(destination, list, null);
             }

@@ -1,3 +1,5 @@
+[1.0.5.1]  Fixed issue with NULL array and list when deserializing object.
+
 [1.0.5.0]  NEW RELEASE
 [1.0.4.3]  Added support for section names that may contain end wrapper or comment starter characters.
 [1.0.4.1]  Fixed issue with SerializeDeserializeAttributeTest.

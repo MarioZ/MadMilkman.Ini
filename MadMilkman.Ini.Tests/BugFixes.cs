@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using NUnit.Framework;
 
 namespace MadMilkman.Ini.Tests
@@ -65,6 +66,41 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("[Segment[A;B]]", lines[8]);
             Assert.AreEqual("[Segment[A;B]]", lines[9]);
             Assert.AreEqual("[Segment[A;B;]", lines[10]);
+        }
+
+        public class Bug2Class
+        {
+            public string[] NullArray { get; set; }
+            public List<string> NullList { get; set; }
+
+            public string[] EmptyArray { get; set; }
+            public List<string> EmptyList { get; set; }
+        }
+
+        [Test]
+        public void Bug2()
+        {
+            var ini = new IniFile();
+            var sec = ini.Sections.Add("Sample");
+            
+            sec.Serialize(
+                new Bug2Class()
+                {
+                    EmptyArray = new string[3],
+                    EmptyList = new List<string>()
+                });
+
+            var deserializeObj = sec.Deserialize<Bug2Class>();
+
+            Assert.IsNull(sec.Keys["NullArray"].Value);
+            Assert.IsNull(sec.Keys["NullList"].Value);
+            Assert.AreEqual("{,,}", sec.Keys["EmptyArray"].Value);
+            Assert.AreEqual("{}", sec.Keys["EmptyList"].Value);
+
+            Assert.IsNull(deserializeObj.NullArray);
+            Assert.IsNull(deserializeObj.NullList);
+            CollectionAssert.AreEqual(new string[] { "", "", "" }, deserializeObj.EmptyArray);
+            CollectionAssert.IsEmpty(deserializeObj.EmptyList);
         }
     }
 }
