@@ -1,3 +1,4 @@
+[1.0.5.2]  Added support for quoted values which can contain comment's starting characters.
 [1.0.5.1]  Fixed issue with NULL array and list when deserializing object.
 
 [1.0.5.0]  NEW RELEASE

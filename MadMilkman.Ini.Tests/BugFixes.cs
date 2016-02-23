@@ -102,5 +102,17 @@ namespace MadMilkman.Ini.Tests
             CollectionAssert.AreEqual(new string[] { "", "", "" }, deserializeObj.EmptyArray);
             CollectionAssert.IsEmpty(deserializeObj.EmptyList);
         }
+
+        [Test]
+        public void Bug3()
+        {
+            string iniFileContent = "[sektion]" + Environment.NewLine +
+                                    "key=\"Data Source=server;Initial Catalog=catalog;Integrated Security=SSPI\"";
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
+
+            IniKey key = file.Sections["sektion"].Keys["key"];
+            Assert.AreEqual("\"Data Source=server;Initial Catalog=catalog;Integrated Security=SSPI\"", key.Value);
+            Assert.IsNull(key.LeadingComment.Text);
+        }
     }
 }

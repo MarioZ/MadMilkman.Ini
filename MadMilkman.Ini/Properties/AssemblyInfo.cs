@@ -9,7 +9,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("MadMilkman")]
 [assembly: AssemblyProduct("MadMilkman.Ini")]
-[assembly: AssemblyCopyright("Copyright © MadMilkman 2015")]
+[assembly: AssemblyCopyright("Copyright © MadMilkman")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -18,5 +18,5 @@ using System.Resources;
 [assembly: AllowPartiallyTrustedCallers]
 [assembly: CLSCompliant(true)]
 
-[assembly: AssemblyVersion("1.0.5.1")]
+[assembly: AssemblyVersion("1.0.5.2")]
 [assembly: NeutralResourcesLanguageAttribute("en-US")]
