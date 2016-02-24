@@ -85,9 +85,9 @@ namespace MadMilkman.Ini
                 this.currentTrailingComment.Text += Environment.NewLine + text;
         }
 
+        /* MZ(2015-08-29): Added support for section names that may contain end wrapper or comment starter characters. */
         private void ReadSection(int leftIndention, string line, IniFile file)
         {
-            /* MZ(2015-08-29): Added support for section names that may contain end wrapper or comment starter characters. */
             int sectionEndIndex = -1, potentialCommentIndex, tempIndex = leftIndention;
             while (tempIndex != -1 && ++tempIndex <= line.Length)
             {

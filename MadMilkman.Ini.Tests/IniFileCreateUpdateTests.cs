@@ -298,6 +298,7 @@ namespace MadMilkman.Ini.Tests
             file.Sections[0].Keys.Add(key);
         }
 
+        [Test]
         public void UpdateArrayIndexerTest()
         {
             var file = new IniFile();
