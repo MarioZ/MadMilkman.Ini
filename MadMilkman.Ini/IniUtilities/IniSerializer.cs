@@ -38,7 +38,10 @@ namespace MadMilkman.Ini
         {
             foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                if (!IniSerializer.PropertyTypeVerifier(property.PropertyType))
+                var typeConverterAttributes = property.GetCustomAttributes(typeof(TypeConverterAttribute), false);
+                bool hasTypeConverter = typeConverterAttributes.Length > 0;
+
+                if (!hasTypeConverter && !IniSerializer.PropertyTypeVerifier(property.PropertyType))
                     continue;
 
                 string propertyName = null;
@@ -64,7 +67,16 @@ namespace MadMilkman.Ini
             if (propertyValue == null)
                 return;
 
-            if (property.PropertyType.IsArray || property.PropertyType.GetInterface(typeof(IList).Name) != null)
+            var typeConverterAttributes = property.GetCustomAttributes(typeof(TypeConverterAttribute), false);
+
+            if (typeConverterAttributes.Length > 0)
+            {
+                var attribute = (TypeConverterAttribute)typeConverterAttributes[0];
+                var converterType = Type.GetType(attribute.ConverterTypeName);
+                var converterInstance = (TypeConverter)converterType.GetConstructor(Type.EmptyTypes).Invoke(new object[0]);
+                key.Value = converterInstance.ConvertToInvariantString(property.GetValue(source, null));
+            }
+            else if (property.PropertyType.IsArray || property.PropertyType.GetInterface(typeof(IList).Name) != null)
             {
                 var values = new List<string>();
 
@@ -82,7 +94,17 @@ namespace MadMilkman.Ini
         {
             var propertyType = property.PropertyType;
 
-            if (propertyType.IsArray)
+            var typeConverterAttributes = property.GetCustomAttributes(typeof(TypeConverterAttribute), false);
+
+            if (typeConverterAttributes.Length > 0)
+            {
+                var attribute = (TypeConverterAttribute)typeConverterAttributes[0];
+                var converterType = Type.GetType(attribute.ConverterTypeName);
+                var converterInstance = (TypeConverter)converterType.GetConstructor(Type.EmptyTypes).Invoke(new object[0]);
+
+                property.SetValue(destination, converterInstance.ConvertFromInvariantString(key.Value), null);
+            }
+            else if (propertyType.IsArray)
             {
                 /* MZ(2016-01-02): Fixed issue with null array and list. */
                 if (!key.IsValueArray)
