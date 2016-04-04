@@ -28,9 +28,7 @@ PM> Install-Package MadMilkman.Ini
   * C++/CLI - `using namespace MadMilkman::Ini;`
 4. Write some INI files processing code.
   * Use code samples located in MadMilkman.Ini.Samples, written in C#, VB.NET and C++/CLI as starting point.
-  * Read [MadMilkman.Ini.Documentation.chm](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.Documentation.chm) to learn more about the component and its API references.
-
-> If you are experiencing difficulties with viewing the CHM file's content after downloading it, right-click on CHM file, select "Properties" and under the "General" tab click "Unblock".
+  * Read [MadMilkman.Ini.Documentation.chm](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.Documentation.zip) to learn more about the component and its API references.
 
 ## Feedback & Support:
 Please feel free to contact me with any questions, suggestions or issues regarding the MadMilkman.Ini component, I will be more than happy to provide a help.
@@ -112,4 +110,4 @@ file->Save("Sample.ini");
 
 **Serialization** feature enables you to serialize an object into section's keys.
 
-More details can be found in [MadMilkman.Ini.Documentation.chm](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.Documentation.chm).
+More details can be found in [MadMilkman.Ini.Documentation.chm](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.Documentation.zip).
