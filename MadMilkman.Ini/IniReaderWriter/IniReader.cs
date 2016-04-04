@@ -142,17 +142,21 @@ namespace MadMilkman.Ini
                 if (this.currentSection == null)
                     this.currentSection = file.Sections.Add(IniSection.GlobalSectionName);
 
-                var currentKey = new IniKey(file,
-                                            line.Substring(leftIndention, keyDelimiterIndex - leftIndention).TrimEnd(),
-                                            this.currentTrailingComment)
+                /* MZ(2016-04-04): Fixed issue with trimming values. */
+                bool spacedDelimiter = keyDelimiterIndex > 0 && line[keyDelimiterIndex - 1] == ' ';
+                string keyName = line.Substring(leftIndention, keyDelimiterIndex - leftIndention - (spacedDelimiter ? 1 : 0));
+                var currentKey = new IniKey(file, keyName, this.currentTrailingComment)
                                  {
                                      LeftIndentation = leftIndention,
                                      LeadingComment = { EmptyLinesBefore = this.currentEmptyLinesBefore }
                                  };
-
                 this.currentSection.Keys.Add(currentKey);
 
-                this.ReadValue(line.Substring(++keyDelimiterIndex).TrimStart(), currentKey);
+                ++keyDelimiterIndex;
+                if (spacedDelimiter && keyDelimiterIndex < line.Length && line[keyDelimiterIndex] == ' ')
+                    ++keyDelimiterIndex;
+
+                this.ReadValue(line.Substring(keyDelimiterIndex), currentKey);
             }
 
             this.currentTrailingComment = null;
@@ -162,10 +166,14 @@ namespace MadMilkman.Ini
         {
             int valueEndIndex = lineLeftover.IndexOf((char)this.options.CommentStarter);
 
+            /* MZ(2016-04-04): Fixed issue with trimming values. */
             if (valueEndIndex == -1)
-                key.Value = lineLeftover.TrimEnd();
+                key.Value = lineLeftover;
             else if (valueEndIndex == 0)
-                key.Value = key.LeadingComment.Text = string.Empty;
+            {
+                key.Value = string.Empty;
+                key.LeadingComment.Text = lineLeftover.Substring(1);
+            }
             else
                 this.ReadValueLeadingComment(lineLeftover, valueEndIndex, key);
         }
@@ -186,7 +194,7 @@ namespace MadMilkman.Ini
 
                 // The amount of 'whitespace' characters between key's value and comment's starting character.
                 int leftIndention = 0;
-                while (lineLeftover[--potentialCommentIndex] == ' ' || lineLeftover[potentialCommentIndex] == '\t')
+                while (potentialCommentIndex > 0 && (lineLeftover[--potentialCommentIndex] == ' ' || lineLeftover[potentialCommentIndex] == '\t'))
                     leftIndention++;
 
                 key.LeadingComment.LeftIndentation = leftIndention;

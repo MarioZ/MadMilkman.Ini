@@ -114,5 +114,26 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("\"Data Source=server;Initial Catalog=catalog;Integrated Security=SSPI\"", key.Value);
             Assert.IsNull(key.LeadingComment.Text);
         }
+
+        [Test]
+        public void Bug4()
+        {
+            string iniFileContent = "suffix= LLC © 2016" + Environment.NewLine +
+                                    "suffix=LLC © 2016  ";
+            IniFile file =
+                IniUtilities.LoadIniFileContent(iniFileContent,
+                    new IniOptions() { Encoding = System.Text.Encoding.UTF8 });
+
+            Assert.AreEqual(" LLC © 2016", file.Sections[0].Keys[0].Value);
+            Assert.AreEqual("LLC © 2016  ", file.Sections[0].Keys[1].Value);
+
+            iniFileContent = "suffix = LLC © 2016" + Environment.NewLine +
+                             "suffix =   LLC © 2016  ";
+            file = IniUtilities.LoadIniFileContent(iniFileContent,
+                new IniOptions() { Encoding = System.Text.Encoding.UTF8 });
+
+            Assert.AreEqual("LLC © 2016", file.Sections[0].Keys[0].Value);
+            Assert.AreEqual("  LLC © 2016  ", file.Sections[0].Keys[1].Value);
+        }
     }
 }

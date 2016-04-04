@@ -201,7 +201,7 @@ namespace MadMilkman.Ini.Tests
 
             Assert.AreEqual(Environment.NewLine + "Key's trailing comment;", file.Sections[2].Keys[0].TrailingComment.Text);
             Assert.AreEqual("Key", file.Sections[2].Keys[0].Name);
-            Assert.AreEqual("Value", file.Sections[2].Keys[0].Value);
+            Assert.AreEqual("Value  ", file.Sections[2].Keys[0].Value);
             Assert.IsNull(file.Sections[2].Keys[0].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[2].Keys[0].LeadingComment.LeftIndentation);
 
@@ -227,7 +227,9 @@ namespace MadMilkman.Ini.Tests
                                     "Key =" + Environment.NewLine +
                                     "Key =;" + Environment.NewLine +
                                     "Key = " + Environment.NewLine +
-                                    "Key = ;";
+                                    "Key = ;" + Environment.NewLine +
+                                    "Key=;Test" + Environment.NewLine +
+                                    "Key = ;Test";
 
             IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
 
@@ -237,12 +239,12 @@ namespace MadMilkman.Ini.Tests
             Assert.IsEmpty(file.Sections[0].Keys[1].Value);
             Assert.IsEmpty(file.Sections[0].Keys[1].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[1].LeadingComment.LeftIndentation);
-            Assert.IsEmpty(file.Sections[0].Keys[2].Value);
+            Assert.AreEqual(" ", file.Sections[0].Keys[2].Value);
             Assert.IsNull(file.Sections[0].Keys[2].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[2].LeadingComment.LeftIndentation);
-            Assert.IsEmpty(file.Sections[0].Keys[3].Value);
+            Assert.AreEqual(" ", file.Sections[0].Keys[3].Value);
             Assert.IsEmpty(file.Sections[0].Keys[3].LeadingComment.Text);
-            Assert.AreEqual(0, file.Sections[0].Keys[3].LeadingComment.LeftIndentation);
+            Assert.AreEqual(1, file.Sections[0].Keys[3].LeadingComment.LeftIndentation);
             Assert.IsEmpty(file.Sections[0].Keys[4].Value);
             Assert.IsNull(file.Sections[0].Keys[4].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[4].LeadingComment.LeftIndentation);
@@ -255,6 +257,12 @@ namespace MadMilkman.Ini.Tests
             Assert.IsEmpty(file.Sections[0].Keys[7].Value);
             Assert.IsEmpty(file.Sections[0].Keys[7].LeadingComment.Text);
             Assert.AreEqual(0, file.Sections[0].Keys[7].LeadingComment.LeftIndentation);
+            Assert.IsEmpty(file.Sections[0].Keys[8].Value);
+            Assert.AreEqual("Test", file.Sections[0].Keys[8].LeadingComment.Text);
+            Assert.AreEqual(0, file.Sections[0].Keys[8].LeadingComment.LeftIndentation);
+            Assert.IsEmpty(file.Sections[0].Keys[9].Value);
+            Assert.AreEqual("Test", file.Sections[0].Keys[9].LeadingComment.Text);
+            Assert.AreEqual(0, file.Sections[0].Keys[9].LeadingComment.LeftIndentation);
         }
 
         [Test]
