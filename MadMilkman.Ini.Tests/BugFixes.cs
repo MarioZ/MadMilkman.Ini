@@ -135,5 +135,15 @@ namespace MadMilkman.Ini.Tests
             Assert.AreEqual("LLC © 2016", file.Sections[0].Keys[0].Value);
             Assert.AreEqual("  LLC © 2016  ", file.Sections[0].Keys[1].Value);
         }
+
+        [Test]
+        public void Bug5()
+        {
+            string iniFileContent = "[Section 1]" + Environment.NewLine +
+                                    "Key 1.1=Value 1.1";
+            IniFile file = IniUtilities.LoadIniFileContent(iniFileContent, new IniOptions());
+
+            Assert.AreEqual("Value 1.1", file.Sections["Section 1"].Keys["Key 1.1"].Value);
+        }
     }
 }

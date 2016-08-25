@@ -233,17 +233,10 @@ namespace MadMilkman.Ini
 
         private int GetItemIndexByName(string name, int startIndex = 0)
         {
-            var iniItems = (IEnumerable<IniItem>)this.items;
-            int index = 0;
-
-            foreach (var item in iniItems)
-            {
-                if (index >= startIndex &&
-                    item.Name.Equals(name, (this.caseSensitive) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
+            /* MZ(2016-08-25): Fixed issue with invalid cast exception. */
+            for (int index = startIndex; index < this.items.Count; ++index)
+                if (this.items[index].Name.Equals(name, (this.caseSensitive) ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase))
                     return index;
-                else
-                    index++;
-            }
 
             return -1;
         }

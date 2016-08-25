@@ -1,3 +1,4 @@
+[1.0.6.2]  Fixed issue with invalid cast exception.
 [1.0.6.1]  Fixed issue with trimming values.
 
 [1.0.6.0]  NEW RELEASE
