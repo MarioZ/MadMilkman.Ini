@@ -110,4 +110,27 @@ file->Save("Sample.ini");
 
 **Serialization** feature enables you to serialize an object into section's keys.
 
+## List Sections
+If you wish to iterate through the file and retrieve a list of sctions, you can do something like this:
+### VB.NET
+``` vb.net
+Dim iniFile As New Ini.IniFile(                
+New Ini.IniOptions() With {                    
+    .CommentStarter = Ini.IniCommentStarter.Semicolon,                    
+    .KeyDelimiter = Ini.IniKeyDelimiter.Colon,                    
+    .KeySpaceAroundDelimiter = False,                    
+    .SectionWrapper = Ini.IniSectionWrapper.SquareBrackets})
+        
+    ' Load file from path.        
+    iniFile.Load("C:\testfile.ini")        
+    
+    Dim SectionsCount As Integer = iniFile.Sections.Count
+        
+   'Iterate through the ini file returning all the section names.        
+   For x As Integer = 0 To SectionsCount - 1            
+       Console.WriteLine(iniFile.Sections(x).Name)        
+   Next
+   
+```
+
 More details can be found in [MadMilkman.Ini.Documentation.chm](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.Documentation.zip).
