@@ -1,4 +1,4 @@
-# ![MadMilkman.Ini component's icon](../master/MadMilkman.Ini/Properties/MadMilkman.Ini.png) MadMilkman.Ini
+# ![MadMilkman.Ini component's icon](https://raw.githubusercontent.com/MarioZ/MadMilkman.Ini/64ac0180cc44afd72f8e78945d62ce10ed585f3d/MadMilkman.Ini/Properties/MadMilkman.Ini.png) MadMilkman.Ini
 **MadMilkman.Ini** is a .NET component which simplifies processing of INI files and requires only a minimum **.NET Framework version 2.0**.
 It is 100% managed code (C#), **compatible with Mono framework**, which provides an easy to use programming interface.
 
@@ -12,11 +12,11 @@ It is 100% managed code (C#), **compatible with Mono framework**, which provides
 
 ## Installation:
 You can use this component in any way that suits you:
-* As _private assembly_ by adding [MadMilkman.Ini.dll](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.zip) inside your project.
-* As _shared assembly_ by installing [MadMilkman.Ini.Setup.msi](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.Setup.msi).
-* As _package_ via [NuGet](http://www.nuget.org/packages/MadMilkman.Ini):
+* As _private assembly_ by adding [MadMilkman.Ini.dll](https://github.com/MarioZ/MadMilkman.Ini/raw/2fddab97474a1c801bd1be6ddbbf33f12261d272/MadMilkman.Ini.zip) inside your project.
+* As _shared assembly_ by installing [MadMilkman.Ini.Setup.msi](https://github.com/MarioZ/MadMilkman.Ini/raw/2fddab97474a1c801bd1be6ddbbf33f12261d272/MadMilkman.Ini.Setup.msi).
+* As _package_ via [NuGet](https://www.nuget.org/packages/MadMilkman.Ini/1.0.6):
 ```powershell
-PM> Install-Package MadMilkman.Ini
+PM> Install-Package MadMilkman.Ini -Version 1.0.6
 ```
 
 ## First steps:
@@ -28,7 +28,7 @@ PM> Install-Package MadMilkman.Ini
   * C++/CLI - `using namespace MadMilkman::Ini;`
 4. Write some INI files processing code.
   * Use code samples located in MadMilkman.Ini.Samples, written in C#, VB.NET and C++/CLI as starting point.
-  * Read [MadMilkman.Ini.Documentation.chm](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.Documentation.zip) to learn more about the component and its API references.
+  * Read [MadMilkman.Ini.Documentation.chm](https://github.com/MarioZ/MadMilkman.Ini/raw/2fddab97474a1c801bd1be6ddbbf33f12261d272/MadMilkman.Ini.Documentation.zip) to learn more about the component and its API references.
 
 ## Feedback & Support:
 Please feel free to contact me with any questions, suggestions or issues regarding the MadMilkman.Ini component, I will be more than happy to provide a help.
@@ -110,4 +110,4 @@ file->Save("Sample.ini");
 
 **Serialization** feature enables you to serialize an object into section's keys.
 
-More details can be found in [MadMilkman.Ini.Documentation.chm](https://github.com/MarioZ/MadMilkman.Ini/raw/master/MadMilkman.Ini.Documentation.zip).
+More details can be found in [MadMilkman.Ini.Documentation.chm](https://github.com/MarioZ/MadMilkman.Ini/raw/2fddab97474a1c801bd1be6ddbbf33f12261d272/MadMilkman.Ini.Documentation.zip).
